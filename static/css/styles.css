@@ -1,0 +1,701 @@
+/* Main styles */
+
+:root {
+  --text-color: #fff;
+  --text-hover-color: #18191C;
+  --background-color: #18191C;
+  --input-color: #18191C;
+  --input-border: #bdbdbd;
+  --input-background-color: #fff;
+  --primary-color: #2b8111;
+  --get-color: #69dd9a;
+  --get-hover-color: #69dd9a;
+  --post-color: #e2c85f;
+  --post-hover-color: #ffdb49;
+  --patch-color: #a5a6e1;
+  --patch-hover-color: #b9baff;
+  --delete-color: #ff3737;
+  --delete-hover-color: #f15f5f;
+}
+
+body {
+  padding: 0;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  font-size: 12pt;
+  font-family: "Roboto", sans-serif;
+  line-height: 1.5;
+}
+
+/* Content */
+
+#content {
+  display: none;
+  width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Стили для табов */
+
+.tabs {
+  display: flex;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.tab-links {
+  width: 100%;
+  text-align: center;
+  font-size: 10pt;
+  font-weight: 700;
+  color: var(--text-color);
+  border: 2px solid var(--primary-color);
+  padding: 7px 0;
+  cursor: pointer;
+  transition: background-color 0.5s ease;
+}
+
+#tabRedisReadData.active {
+  color: var(--text-hover-color);
+  background-color: var(--get-color);
+}
+
+#tabRedisReadData:hover {
+  color: var(--text-hover-color);
+  background-color: var(--get-hover-color);
+}
+
+#tabRedisAddData.active {
+  color: var(--text-hover-color);
+  background-color: var(--post-color);
+}
+
+#tabRedisAddData:hover {
+  color: var(--text-hover-color);
+  background-color: var(--post-hover-color);
+}
+
+#tabRedisChangeTtl.active {
+  color: var(--text-hover-color);
+  background-color: var(--patch-color);
+}
+
+#tabRedisChangeTtl:hover {
+  color: var(--text-hover-color);
+  background-color: var(--patch-hover-color);
+}
+
+#tabRedisRenameKey.active {
+  color: var(--text-hover-color);
+  background-color: var(--patch-color);
+}
+
+#tabRedisRenameKey:hover {
+  color: var(--text-hover-color);
+  background-color: var(--patch-hover-color);
+}
+
+#tabRedisResetKey.active {
+  color: var(--text-hover-color);
+  background-color: var(--delete-color);
+}
+
+#tabRedisResetKey:hover {
+  color: var(--text-hover-color);
+  background-color: var(--delete-hover-color);
+}
+
+#tabRedisDownloadDump.active {
+  color: var(--text-hover-color);
+  background-color: var(--get-color);
+}
+
+#tabRedisDownloadDump:hover {
+  color: var(--text-hover-color);
+  background-color: var(--get-hover-color);
+}
+
+#tabRedisUploadDump.active {
+  color: var(--text-hover-color);
+  background-color: var(--post-color);
+}
+
+#tabRedisUploadDump:hover {
+  color: var(--text-hover-color);
+  background-color: var(--post-hover-color);
+}
+
+.tab-content {
+  display: none;
+  padding: 6px 12px;
+  border: 2px solid var(--primary-color);
+}
+
+.tab-items {
+  display: flex;
+  justify-content: space-between;
+}
+
+.tab-item {
+  width: 325px;
+  margin: 10px 0 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tab-content {
+  animation: fadeEffect 1.0s;
+}
+
+@keyframes fadeEffect {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* Block Redis Info */
+
+#redisProperty {
+  display: flex;
+  justify-content: right;
+  margin: 10px;
+}
+
+.redis-property-item {
+  margin: 0 0 0 15px;
+}
+
+.redis-info-block {
+  display: flex;
+  margin: 10px 0;
+}
+
+.redis-info-text {
+  font-weight: 700;
+}
+
+.refresh-container {
+  width: 100%;
+  margin: auto 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.refresh-container-item {
+  display: flex;
+}
+
+.refresh-block-item {
+  display: flex;
+  justify-content: space-between;
+  margin: 5px;
+}
+
+.search-bock {
+  display: flex;
+}
+
+.search-block-item {
+  display: flex;
+  align-items: center;
+  margin: 5px;
+}
+
+/* Validator */
+
+#validator {
+  width: 35px;
+  cursor: pointer;
+}
+
+.validator-wrapper {
+  position: relative;
+  width: 35px;
+}
+
+#validator {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+#validatorHover {
+  display: none;
+  width: 100%;
+  height: auto;
+}
+
+.validator-wrapper:hover #validator {
+  display: none;
+}
+
+.validator-wrapper:hover #validatorHover {
+  display: block;
+  cursor: pointer;
+}
+
+/* Search Block Item */
+
+#searchTypeKey {
+  width: 115px;
+}
+
+/* Загрузка страницы */
+
+#preLoader {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pre-loader-animation {
+  width: 50px;
+  height: 50px;
+  border: 5px solid var(--primary-color);
+  border-top: 5px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Стили для поля ввода */
+
+#inputRefreshRate {
+  text-align: right;
+  width: 50px;
+  height: 26.5px;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--input-color);
+  border: 1px solid var(--input-border);
+  background-color: var(--input-background-color);
+  background-clip: padding-box;
+  margin: 0 10px;
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+#inputRefreshRate::placeholder {
+  color: var(--input-color);
+  opacity: 0.4;
+}
+
+#inputRefreshRate:focus {
+  color: var(--input-color);
+  border-color: var(--input-border);
+  background-color: var(--input-background-color);
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(158, 158, 158, 0.25);
+}
+
+#inputRefreshRate:disabled {
+  color: #bcbdbe;
+  background-color: #e3e3e3;
+  -webkit-transition: .4s;
+  transition: .4s;
+  opacity: 1;
+}
+
+/* Стили для переключателя */
+
+.switch-refresh {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 26px;
+  margin: 0 0 0 10px;
+}
+
+.switch-refresh input {
+  display: none;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 1.5px;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 22px;
+  width: 22px;
+  left: 3.5px;
+  top: 2.5px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked+.slider {
+  background-color: var(--primary-color);
+}
+
+input:focus+.slider {
+  box-shadow: 0 0 1px var(--primary-color);
+}
+
+input:checked+.slider:before {
+  -webkit-transform: translateX(17px);
+  -ms-transform: translateX(17px);
+  transform: translateX(17px);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+/* Стили для полей ввода */
+
+.redis-input {
+  width: 190px;
+  height: 30px;
+  font-size: 10pt;
+  font-weight: 700;
+  margin: auto 0;
+  padding: 0.375rem 0.75rem;
+  color: var(--input-color);
+  background-color: var(--input-background-color);
+  background-clip: padding-box;
+  border: 1px solid var(--input-border);
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.redis-input::placeholder {
+  color: var(--input-color);
+  opacity: 0.4;
+}
+
+.redis-input:focus {
+  color: var(--input-color);
+  background-color: var(--input-background-color);
+  border-color: var(--input-border);
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem #9e9e9e;
+}
+
+.ttl-input {
+  width: 50px;
+  text-align: right;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+/* Стили для кнопок */
+
+button {
+  padding: 10px;
+  margin: 0 5px;
+  font-weight: 700;
+  padding: 0.375rem 0.75rem;
+  border: 1px solid var(--input-border);
+  border-radius: 0.25rem;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+button:active {
+  transform: scale(1.00);
+}
+
+#btnReadData,
+#btnDownloadDumpAllKeys {
+  background-color: var(--get-color);
+}
+
+#btnReadData:hover,
+#btnDownloadDumpAllKeys:hover {
+  background-color: var(--get-hover-color);
+}
+
+#btnAddData {
+  background-color: var(--post-color);
+}
+
+#btnAddData:hover {
+  background-color: var(--post-hover-color);
+}
+
+#btnTtl {
+  background-color: var(--patch-color);
+}
+
+#btnTtl:hover {
+  background-color: var(--patch-hover-color);
+}
+
+#btnDefaultTtl {
+  background-color: var(--patch-color);
+}
+
+#btnDefaultTtl:hover {
+  background-color: var(--patch-hover-color);
+}
+
+#btnRenameKey {
+  background-color: var(--patch-color);
+}
+
+#btnRenameKey:hover {
+  background-color: var(--patch-hover-color);
+}
+
+#btnResetKey {
+  background-color: var(--delete-color);
+}
+
+#btnResetKey:hover {
+  background-color: var(--delete-hover-color);
+}
+
+#btnResetAllKey {
+  background-color: var(--delete-color);
+}
+
+#btnResetAllKey:hover {
+  background-color: var(--delete-hover-color);
+}
+
+#btnDownloadDumpKey {
+  background-color: var(--get-color);
+}
+
+#btnDownloadDumpKey:hover {
+  background-color: var(--get-hover-color);
+}
+
+#btnUploadDump {
+  background-color: var(--post-color);
+}
+
+#btnUploadDump:hover {
+  background-color: var(--post-hover-color);
+}
+
+.button-submit {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+#fileUploadDump {
+  width: 190px;
+  height: 30px;
+}
+
+/* Стили для textarea */
+
+.request-body {
+  width: 100%;
+  height: 230px;
+  resize: none;
+  border-radius: 0.25rem;
+}
+
+.response-body {
+  width: 100%;
+  height: 230px;
+  resize: none;
+  border-radius: 0.25rem;
+}
+
+.textarea-block {
+  display: flex;
+  width: 100%;
+  margin: 0 0 0 20px;
+}
+
+.textarea-block-itme {
+  width: 100%;
+  margin-left: 5px;
+}
+
+.textarea-block-item-text {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Стили для модального окна */
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  
+}
+
+.modal-content {
+  width: 600px;
+  margin: 100px auto;
+  padding: 15px 20px;
+  border: 2px solid var(--primary-color);
+  background-color: var(--background-color);
+}
+
+.modal-block {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#closeButton {
+  color: red;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+#closeButton:hover,
+#closeButton:focus {
+  color: #b80000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Table Pagination */
+
+.pagination-block {
+  float: right;
+  margin: 10px 0;
+}
+
+#btnPaginationPrev,
+#btnPaginationNext {
+  color: var(--text-color);
+}
+
+#btnPaginationPrev:disabled,
+#btnPaginationNext:disabled {
+  color: #bdbdbd;
+  background-color: var(--input-background-color);
+  cursor: not-allowed;
+}
+
+/* Table Redis Info */
+
+td {
+  padding: 3px;
+  border: 2px solid var(--primary-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+th {
+  text-align: center;
+  padding: 3px;
+  border: 2px solid var(--primary-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#redisTable {
+  width: 100%;
+  table-layout: fixed;
+  border-top: 7px solid var(--primary-color);
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  margin: auto;
+  border: 1px solid var(--input-border);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.index-key-th {
+  width: 50px;
+}
+
+.number-records-key-th {
+  width: 200px;
+}
+
+.expected-number-records-key-th {
+  width: 295px;
+}
+
+.memory-usage-key-th {
+  width: 100px;
+}
+
+.ttl-key-th {
+  width: 100px;
+}
+
+.index-key {
+  text-align: center;
+}
+
+.number-records-key {
+  text-align: center;
+}
+
+.expected-number-records-key {
+  text-align: center;
+}
+
+.memory-usage-key {
+  text-align: center;
+}
+
+.ttl-key {
+  text-align: center;
+}
+
+/* Валидация количества данных */
+
+.high-value {
+  color: var(--background-color);
+  background-color: var(--get-color);
+}
+
+.low-value {
+  color: var(--background-color);
+  background-color: var(--delete-color);
+}

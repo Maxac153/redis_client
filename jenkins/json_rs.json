@@ -1,0 +1,14 @@
+{
+  "genImages": "",
+  "pathImages": "",
+  "images": [
+    {
+      "type": ".rs",
+      "imageName": "redis_client",
+      "gen": "",
+      "commands": [
+        "sudo REDIS_HOST=localhost REDIS_PORT=6379 REDIS_POOL_CONNECTION=100 WORKERS=16 ./redis-client > /dev/null 2>&1 &"
+      ]
+    }
+  ]
+}

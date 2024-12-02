@@ -1,0 +1,32 @@
+{
+  "genImages": "",
+  "pathImages": "",
+  "images": [
+    {
+      "type": "Docker Run",
+      "imageName": "redis.tar",
+      "gen": "",
+      "commands": [
+        "sudo docker stop redis 2>/dev/null || true;",
+        "sudo docker rm redis 2>/dev/null || true;",
+        "sudo docker rmi redis 2>/dev/null || true;",
+        "sudo docker load -i redis.tar;",
+        "sudo rm -f redis.tar;",
+        "sudo docker run -d --name redis --privileged -p 6379:6379 -v /path/to/local/data:/data redis:latest &"
+      ]
+    },
+    {
+      "type": "Docker Run",
+      "imageName": "redis-client-rust.tar",
+      "gen": "",
+      "commands": [
+        "sudo docker stop redis-client-rust 2>/dev/null || true;",
+        "sudo docker rm redis-client-rust 2>/dev/null || true;",
+        "sudo docker rmi redis-client-rust 2>/dev/null || true;",
+        "sudo docker load -i redis-client-rust.tar;",
+        "sudo rm -f redis-client-rust.tar;",
+        "sudo docker run --name redis-client-rust --privileged -d -p 8000:8080 -e REDIS_HOST=localhost -e REDIS_PORT=6379 -e REDIS_POOL_CONNECTION=100 -e WORKERS=16 --rm redis-client-rust &"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,403 @@
+{
+	"info": {
+		"_postman_id": "d86415fa-4c08-4406-ab96-47f72bdb7638",
+		"name": "redis-client-rust",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19250021"
+	},
+	"item": [
+		{
+			"name": "Redis Add List Data",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"data\": \"Hello Redis!\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_protocol}}{{app_host}}{{app_port_rust}}/addList?key=testList&add_mode=LAST",
+					"host": [
+						"{{app_protocol}}{{app_host}}{{app_port_rust}}"
+					],
+					"path": [
+						"addList"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "testList"
+						},
+						{
+							"key": "add_mode",
+							"value": "LAST"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Redis Add Hash Data",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"data\": \"Hello Redis!\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{app_protocol}}{{app_host}}{{app_port_rust}}/addHash?key=testHash&field=name",
+					"host": [
+						"{{app_protocol}}{{app_host}}{{app_port_rust}}"
+					],
+					"path": [
+						"addHash"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "testHash"
+						},
+						{
+							"key": "field",
+							"value": "name"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Redis Read List Data",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{app_protocol}}{{app_host}}{{app_port_rust}}/readList?key=testList&read_mode=LAST",
+					"host": [
+						"{{app_protocol}}{{app_host}}{{app_port_rust}}"
+					],
+					"path": [
+						"readList"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "testList"
+						},
+						{
+							"key": "read_mode",
+							"value": "LAST"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Redis Read Hash Data",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{app_protocol}}{{app_host}}{{app_port_rust}}/readHash?key=testHash",
+					"host": [
+						"{{app_protocol}}{{app_host}}{{app_port_rust}}"
+					],
+					"path": [
+						"readHash"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "testHash"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Redis Reset Key",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_protocol}}{{app_host}}{{app_port_rust}}/resetKey?key=testList",
+					"host": [
+						"{{app_protocol}}{{app_host}}{{app_port_rust}}"
+					],
+					"path": [
+						"resetKey"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "testList"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Redis Reset All Keys",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{app_protocol}}{{app_host}}{{app_port_rust}}/resetAllKeys",
+					"host": [
+						"{{app_protocol}}{{app_host}}{{app_port_rust}}"
+					],
+					"path": [
+						"resetAllKeys"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Redis Change TTL",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "{{app_protocol}}{{app_host}}{{app_port_rust}}/changeTtl?key=testList&ttl=3600",
+					"host": [
+						"{{app_protocol}}{{app_host}}{{app_port_rust}}"
+					],
+					"path": [
+						"changeTtl"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "testList"
+						},
+						{
+							"key": "ttl",
+							"value": "3600",
+							"description": "Если нужно вернуть ∞ TTL поставить 0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Redis Rename Key",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "{{app_protocol}}{{app_host}}{{app_port_rust}}/renameKey?old_name_key=testList&new_name_key=new_testList",
+					"host": [
+						"{{app_protocol}}{{app_host}}{{app_port_rust}}"
+					],
+					"path": [
+						"renameKey"
+					],
+					"query": [
+						{
+							"key": "old_name_key",
+							"value": "testList"
+						},
+						{
+							"key": "new_name_key",
+							"value": "new_testList"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Redis Main Page",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{app_protocol}}{{app_host}}{{app_port_rust}}",
+					"host": [
+						"{{app_protocol}}{{app_host}}{{app_port_rust}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Redis Status Key",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{app_protocol}}{{app_host}}{{app_port_rust}}/statusKey?search_key=testList&type_key=Hash",
+					"host": [
+						"{{app_protocol}}{{app_host}}{{app_port_rust}}"
+					],
+					"path": [
+						"statusKey"
+					],
+					"query": [
+						{
+							"key": "search_key",
+							"value": "testList"
+						},
+						{
+							"key": "type_key",
+							"value": "Hash",
+							"description": "Необязательный параметр (List, Hash)"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Redis Status Json",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{app_protocol}}{{app_host}}{{app_port_rust}}/statusJson?search_key=testList&type_key=List&lower_limit=0&upper_limit=30",
+					"host": [
+						"{{app_protocol}}{{app_host}}{{app_port_rust}}"
+					],
+					"path": [
+						"statusJson"
+					],
+					"query": [
+						{
+							"key": "search_key",
+							"value": "testList",
+							"description": "Необязательный параметр"
+						},
+						{
+							"key": "type_key",
+							"value": "List",
+							"description": "Необязательный параметр (List, Hash)"
+						},
+						{
+							"key": "lower_limit",
+							"value": "0",
+							"description": "upper_limit - lower_limit <= 30"
+						},
+						{
+							"key": "upper_limit",
+							"value": "30"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Redis Download Dump Key",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{app_protocol}}{{app_host}}{{app_port_rust}}/downloadDumpKey?key=testList",
+					"host": [
+						"{{app_protocol}}{{app_host}}{{app_port_rust}}"
+					],
+					"path": [
+						"downloadDumpKey"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "testList"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Redis Download Dump All Keys",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{app_protocol}}{{app_host}}{{app_port_rust}}/downloadDumpAllKeys",
+					"host": [
+						"{{app_protocol}}{{app_host}}{{app_port_rust}}"
+					],
+					"path": [
+						"downloadDumpAllKeys"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Redis Upload Dump Key",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "dump",
+							"description": "Файл с раширением .dump",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{app_protocol}}{{app_host}}{{app_port_rust}}/uploadDumpKey",
+					"host": [
+						"{{app_protocol}}{{app_host}}{{app_port_rust}}"
+					],
+					"path": [
+						"uploadDumpKey"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Redis Upload Dump All Keys",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "dump",
+							"description": "Файл с раширением .dump",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "{{app_protocol}}{{app_host}}{{app_port_rust}}/uploadDumpAllKeys",
+					"host": [
+						"{{app_protocol}}{{app_host}}{{app_port_rust}}"
+					],
+					"path": [
+						"uploadDumpAllKeys"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

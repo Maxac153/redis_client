@@ -1,0 +1,42 @@
+version: '3.8'
+services:
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "${REDIS_PORT}:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - redis-client-rust-network
+
+  redis-client-rust:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_POOL_CONNECTION=${REDIS_POOL_CONNECTION}
+      - WORKERS=${WORKERS}
+      - MULTIPART_TOTAL_LIMIT=${MULTIPART_TOTAL_LIMIT}
+      - MULTIPART_MEMORY_LIMIT=${MULTIPART_MEMORY_LIMIT}
+      - REQUEST_TIMEOUT_SEC=${REQUEST_TIMEOUT_SEC}
+    container_name: redis-client-rust
+    volumes:
+      - .:/app
+    working_dir: /app
+    ports:
+      - "${APP_PORT}:8000"
+    depends_on:
+      - redis
+    networks:
+      - redis-client-rust-network
+
+networks:
+  redis-client-rust-network:
+    driver: bridge
+
+volumes:
+  redis-data:

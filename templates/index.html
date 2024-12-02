@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/img/logo.ico" type="image/png" />
+    <link href="/static/css/reset.css" rel="stylesheet" />
+    <link href="/static/css/styles.css" rel="stylesheet" />
+    <title>Redis-Client</title>
+</head>
+
+<body>
+    <div id="preLoader">
+        <div class="pre-loader-animation"></div>
+    </div>
+    <div id="content">
+        <div class="redis-tab">
+            <div class="tabs">
+                <div class="tab-links" id="tabRedisReadData">Read Data</div>
+                <div class="tab-links" id="tabRedisAddData">Add Data</div>
+                <div class="tab-links" id="tabRedisChangeTtl">Change TTL</div>
+                <div class="tab-links" id="tabRedisRenameKey">Rename Key</div>
+                <div class="tab-links" id="tabRedisResetKey">Reset Key</div>
+                <div class="tab-links" id="tabRedisDownloadDump">Download Dump</div>
+                <div class="tab-links" id="tabRedisUploadDump">Upload Dump</div>
+            </div>
+
+            <div class="tab-content" id="redisReadData">
+                <div class="tab-items">
+                    <div class="tab-input-block">
+                        <div class="tab-item">
+                            <p>Type Key:</p>
+                            <label for="readTypeKey">
+                                <select class="redis-input" id="readTypeKey" name="readTypeKey">
+                                    <option value="List" selected>List</option>
+                                    <option value="Hash">Hash</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div class="tab-item">
+                            <p>Redis Key:</p>
+                            <label for="readKey">
+                                <input class="redis-input" id="readKey" type="text" name="key" maxlength="255" />
+                            </label>
+                        </div>
+                        <div class="tab-item" id="readModeBlock">
+                            <p>Read Mode:</p>
+                            <label for="readMode">
+                                <select class="redis-input" id="readMode" name="readMode">
+                                    <option value="LAST" selected>LAST</option>
+                                    <option value="FIRST">FIRST</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div class="tab-item" id="readKeepBlock">
+                            <p>Keep Mode:</p>
+                            <label for="keepMode">
+                                <select class="redis-input" id="keepMode" name="keepMode">
+                                    <option value="TRUE" selected>TRUE</option>
+                                    <option value="FALSE">FALSE</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div class="button-submit">
+                            <button class="redis-input" id="btnReadData">Read Key</button>
+                        </div>
+                    </div>
+                    <div class="textarea-block">
+                        <div class="textarea-block-itme">
+                            <div class="textarea-block-item-text">
+                                <p>Response Body:</p>
+                                <p id="responseTimeReadData"></p>
+                            </div>
+                            <label for="readResponseBody">
+                                <textarea class="response-body" id="readResponseBody" name="response"
+                                    readonly></textarea>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="redisAddData">
+                <div class="tab-items">
+                    <div class="tab-input-block">
+                        <div class="tab-item">
+                            <p>Type Key:</p>
+                            <label for="addTypeKey">
+                                <select class="redis-input" id="addTypeKey" name="addTypeKey">
+                                    <option value="List" selected>List</option>
+                                    <option value="Hash">Hash</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div class="tab-item">
+                            <p>Redis Key:</p>
+                            <label for="addKey">
+                                <input class="redis-input" id="addKey" type="text" name="key" maxlength="255" />
+                            </label>
+                        </div>
+                        <div class="tab-item" id="addFieldBlock" style="display: none;">
+                            <p>Redis Field:</p>
+                            <label for="addField">
+                                <input class="redis-input" id="addField" type="text" name="key" maxlength="255" />
+                            </label>
+                        </div>
+                        <div class="tab-item" id="addModeBlock">
+                            <p>Add Mode:</p>
+                            <label for="addMode">
+                                <select class="redis-input" id="addMode" name="addMode">
+                                    <option value="LAST" selected>LAST</option>
+                                    <option value="FIRST">FIRST</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div class="button-submit">
+                            <button class="redis-input" id="btnAddData">Add Key</button>
+                        </div>
+                    </div>
+                    <div class="textarea-block">
+                        <div class="textarea-block-itme">
+                            <p>Request Body:</p>
+                            <label for="addRequestBody">
+                                <textarea class="request-body" id="addRequestBody" name="response"></textarea>
+                            </label>
+                        </div>
+                        <div class="textarea-block-itme">
+                            <div class="textarea-block-item-text">
+                                <p>Response Body:</p>
+                                <p id="responseTimeAddData"></p>
+                            </div>
+                            <label for="addResponseBody">
+                                <textarea class="response-body" id="addResponseBody" name="response"
+                                    readonly></textarea>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="redisChangeTtl">
+                <div class="tab-items">
+                    <div class="tab-input-block">
+                        <div class="tab-item">
+                            <p>Redis Key:</p>
+                            <label for="ttlKey">
+                                <input class="redis-input" id="ttlKey" type="text" name="key" maxlength="255" />
+                            </label>
+                        </div>
+                        <div class="tab-item">
+                            <p>Hour:</p>
+                            <label for="ttlHour">
+                                <input class="redis-input ttl-input" id="ttlHour" type="text" name="key" value="1" />
+                            </label>
+                            <p>Min:</p>
+                            <label for="ttlMin">
+                                <input class="redis-input ttl-input" id="ttlMin" type="text" name="key" value="0" />
+                            </label>
+                            <p>Sec:</p>
+                            <label for="ttlSec">
+                                <input class="redis-input ttl-input" id="ttlSec" type="text" name="key" value="0" />
+                            </label>
+                        </div>
+                        <div class="button-submit">
+                            <button class="redis-input" id="btnTtl">Change TTL</button>
+                        </div>
+                        <div class="button-submit">
+                            <button class="redis-input" id="btnDefaultTtl">Default TTL</button>
+                        </div>
+                    </div>
+                    <div class="textarea-block">
+                        <div class="textarea-block-itme">
+                            <div class="textarea-block-item-text">
+                                <p>Response Body:</p>
+                                <p id="responseTimeTtlData"></p>
+                            </div>
+                            <label for="ttlResponseBody">
+                                <textarea class="response-body" id="ttlResponseBody" name="response"
+                                    readonly></textarea>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="redisRenameKey">
+                <div class="tab-items">
+                    <div class="tab-input-block">
+                        <div class="tab-item">
+                            <p>Old Name Key:</p>
+                            <label for="oldNameKey">
+                                <input class="redis-input" id="oldNameKey" type="text" name="key" maxlength="255" />
+                            </label>
+                        </div>
+                        <div class="tab-item">
+                            <p>New Name Key:</p>
+                            <label for="newNameKey">
+                                <input class="redis-input" id="newNameKey" type="text" name="key" maxlength="255" />
+                            </label>
+                        </div>
+                        <div class="button-submit">
+                            <button class="redis-input" id="btnRenameKey">Rename Key</button>
+                        </div>
+                    </div>
+                    <div class="textarea-block">
+                        <div class="textarea-block-itme">
+                            <div class="textarea-block-item-text">
+                                <p>Response Body:</p>
+                                <p id="responseTimeRenameData"></p>
+                            </div>
+                            <label for="renameKeyResponseBody">
+                                <textarea class="response-body" id="renameKeyResponseBody" name="response"
+                                    readonly></textarea>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="redisResetKey" class="tab-content">
+                <div class="tab-items">
+                    <div class="tab-input-block">
+                        <div class="tab-item">
+                            <p>Reset Key:</p>
+                            <label for="resetKey">
+                                <input class="redis-input" id="resetKey" type="text" name="key" maxlength="255" />
+                            </label>
+                        </div>
+                        <div class="button-submit">
+                            <button class="redis-input" id="btnResetKey">Reset Key</button>
+                        </div>
+                        <div class="button-submit">
+                            <button class="redis-input" id="btnResetAllKey">Reset All Key</button>
+                        </div>
+                    </div>
+                    <div class="textarea-block">
+                        <div class="textarea-block-itme">
+                            <div class="textarea-block-item-text">
+                                <p>Response Body:</p>
+                                <p id="responseTimeResetData"></p>
+                            </div>
+                            <label for="resetKeyResponseBody">
+                                <textarea class="response-body" id="resetKeyResponseBody" name="response"
+                                    readonly></textarea>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="redisDownloadDump">
+                <div class="tab-items">
+                    <div class="tab-input-block">
+                        <div class="tab-item">
+                            <p>Dump Key:</p>
+                            <label for="downloadDumpKey">
+                                <input class="redis-input" id="downloadDumpKey" type="text" name="key"
+                                    maxlength="255" />
+                            </label>
+                        </div>
+                        <div class="button-submit">
+                            <button class="redis-input" id="btnDownloadDumpKey">Download Dump Key</button>
+                        </div>
+                        <div class="button-submit">
+                            <button class="redis-input" id="btnDownloadDumpAllKeys">Download Dump All Keys</button>
+                        </div>
+                    </div>
+                    <div class="textarea-block">
+                        <div class="textarea-block-itme">
+                            <div class="textarea-block-item-text">
+                                <p>Response Body:</p>
+                                <p id="responseTimeDownloadData"></p>
+                            </div>
+                            <label for="downloadDumpResponseBody">
+                                <textarea class="response-body" id="downloadDumpResponseBody" name="response"
+                                    readonly></textarea>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-content" id="redisUploadDump">
+                <div class="tab-items">
+                    <div class="tab-input-block">
+                        <div class="button-submit">
+                            <input id="fileUploadDump" type="file" name="file" accept=".dump,.rdb" />
+                        </div>
+                        <div class="button-submit">
+                            <button class="redis-input" id="btnUploadDump">Upload Dump</button>
+                        </div>
+                    </div>
+                    <div class="textarea-block">
+                        <div class="textarea-block-itme">
+                            <div class="textarea-block-item-text">
+                                <p>Response Body:</p>
+                                <p id="responseTimeUploadData"></p>
+                            </div>
+                            <label for="uploadDumpResponseBody">
+                                <textarea class="response-body" id="uploadDumpResponseBody" name="response"
+                                    readonly></textarea>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="redisProperty">
+                <div class="redis-property-item">
+                    <p class="redis-info-text" id="redisUrl">Redis URL: {{ redis_url }}</p>
+                </div>
+                <div class="redis-property-item">
+                    <p class="redis-info-text" id="connectedClients">Connected Clients: -</p>
+                </div>
+                <div class="redis-property-item">
+                    <p class="redis-info-text" id="totalMemoryUsage">Total Memory Usage: -</p>
+                </div>
+            </div>
+
+            <div class="redis-info-block">
+                <div class="refresh-container">
+                    <div class="refresh-container-item">
+                        <div class="refresh-controls">
+                            <div class="refresh-block-item">
+                                <p class="redis-info-text">Refresh rate (sec):</p>
+                                <label for="inputRefreshRate">
+                                    <input type="text" id="inputRefreshRate" name="lastname" maxlength="2" value="10"
+                                        disabled />
+                                </label>
+                                <p class="redis-info-text">Auto Refresh:</p>
+                                <label for="checkboxRefresh" class="switch-refresh">
+                                    <input type="checkbox" id="checkboxRefresh" />
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="refresh-container-item">
+                        <div class="search-block-item">
+                            <p class="redis-info-text">Search Keys:</p>
+                        </div>
+                        <div class="search-block-item">
+                            <label for="search">
+                                <input type="text" class="redis-input" id="search" maxlength="255" />
+                            </label>
+                        </div>
+                        <div class="search-block-item">
+                            <div id="modal" class="modal">
+                                <div class="modal-content">
+                                    <div class="modal-block">
+                                        <p class="redis-info-text">JSON For Validation:</p>
+                                        <span id="closeButton">&times;</span>
+                                    </div>
+                                    <label for="jsonValidation">
+                                        <textarea class="response-body" id="jsonValidation"
+                                            name="jsonValidation"></textarea>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="validator-wrapper">
+                                <img src="/static/img/validator.webp" id="validator"
+                                    alt="Validation of the amount of data in the table"
+                                    title="Validation of the amount of data">
+                                <img src="/static/img/validator-hover.webp" id="validatorHover"
+                                    alt="Validation of the amount of data in the table"
+                                    title="Validation of the amount of data">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="refresh-container-item">
+                        <div class="search-block-item">
+                            <label for="searchTypeKey">
+                                <select class="redis-input" id="searchTypeKey" name="searchTypeKey">
+                                    <option value="List" selected>List</option>
+                                    <option value="Hash">Hash</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="pagination-block">
+            <button id="btnPaginationPrev"><</button>
+            <span id="pageInfo"></span>
+            <button id="btnPaginationNext">></button>
+        </div>
+        <table id="redisTable">
+            <thead>
+                <tr>
+                    <th class="index-key-th">№</th>
+                    <th class="name-key-th">Key</th>
+                    <th class="number-records-key-th">Number of records</th>
+                    <th class="expected-number-records-key-th">Expected number of records</th>
+                    <th class="memory-usage-key-th">Size</th>
+                    <th class="ttl-key-th">TTL</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+    <script type="module" src="/static/js/app.js"></script>
+</body>
+
+</html>

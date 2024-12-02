@@ -1,0 +1,2 @@
+{"status":"OK","message":"TTL successfully changed, key (test_one), ttl (86400 sec).","data":""}
+{"status":"OK","message":"TTL successfully changed, key (test_two), ttl (86400 sec).","data":""}
