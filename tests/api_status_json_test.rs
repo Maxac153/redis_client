@@ -1,4 +1,4 @@
-mod src;
+mod common;
 
 #[cfg(test)]
 mod tests {
@@ -8,11 +8,11 @@ mod tests {
     };
 
     use redis_client::{
-        handlers::redis::status_json::status_json,
+        handlers::redis::status::status_json,
         models::{response::Response, status::StatusJson as SJM},
     };
 
-    use crate::src::{
+    use crate::common::{
         common::{load_test_params, TestSetup},
         data_structures::status_json::StatusJson,
     };
@@ -43,31 +43,34 @@ mod tests {
 
         let test_cases = [
             (
-                "Проверка запроса статуса.".to_string(),
+                "Проверка запроса статуса.",
                 "OK",
                 StatusJson::default()
                     .search_key("status_json_")
                     .type_key("List")
                     .lower_limit(0)
-                    .upper_limit(30),
+                    .upper_limit(30)
+                    .build(),
             ),
             (
-                "Проверка привешения лимита (лимит 30 значений).".to_string(),
+                "Проверка привешения лимита (лимит 30 значений).",
                 "KO",
                 StatusJson::default()
                     .search_key("status_json_")
                     .type_key("List")
                     .lower_limit(0)
-                    .upper_limit(40),
+                    .upper_limit(40)
+                    .build(),
             ),
             (
-                "Проверка некорректного лимита upper_limit < lower_limit.".to_string(),
+                "Проверка некорректного лимита upper_limit < lower_limit.",
                 "KO",
                 StatusJson::default()
                     .search_key("status_json_")
                     .type_key("List")
                     .lower_limit(10)
-                    .upper_limit(1),
+                    .upper_limit(1)
+                    .build(),
             ),
         ];
 

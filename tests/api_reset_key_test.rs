@@ -1,4 +1,4 @@
-mod src;
+mod common;
 
 #[cfg(test)]
 mod tests {
@@ -8,7 +8,7 @@ mod tests {
     };
     use r2d2_redis::redis::Commands;
 
-    use crate::src::{
+    use crate::common::{
         common::{load_test_params, TestSetup},
         data_structures::reset_key::ResetKey,
     };
@@ -28,20 +28,22 @@ mod tests {
 
         let test_cases = [
             (
-                "Проверка удаления данных по ключу.".to_string(),
+                "Проверка удаления данных по ключу.",
                 ResetKey::default().key("reset_key_test"),
                 Response::default()
                     .status("OK")
                     .message("Deleted record key (reset_key_test).")
-                    .data(""),
+                    .data("")
+                    .build(),
             ),
             (
-                "Проверка удаления данных по несуществующему ключу.".to_string(),
+                "Проверка удаления данных по несуществующему ключу.",
                 ResetKey::default().key("reset_key_test"),
                 Response::default()
                     .status("KO")
                     .message("The key (reset_key_test) does not exist!")
-                    .data(""),
+                    .data("")
+                    .build(),
             ),
         ];
 

@@ -22,4 +22,11 @@ impl ReadKey {
         self.read_mod = read_mod.to_string();
         self
     }
+
+    pub fn build(self) -> ReadKey {
+        ReadKey {
+            key: self.key,
+            read_mod: self.read_mod,
+        }
+    }
 }

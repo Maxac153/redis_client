@@ -11,6 +11,16 @@ pub struct ChangeTtlRequest {
     ttl: usize,
 }
 
+#[utoipa::path(
+    tag = "Redis Client",
+    description = "Redis Change TTL - Смена TTL (изменение времени жизни данных)",
+    patch,
+    path = "/changeTtl",
+    params(
+        ("key" = String, Query, description = "Name of the key", example = "listKey"),
+        ("ttl" = String, Query, description = "TTL - Time to live", example = "600")
+    ),
+)]
 #[patch("/changeTtl")]
 pub async fn change_ttl(
     pool: web::Data<Pool<RedisConnectionManager>>,

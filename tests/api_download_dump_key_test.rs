@@ -1,4 +1,4 @@
-mod src;
+mod common;
 
 #[cfg(test)]
 mod tests {
@@ -10,7 +10,7 @@ mod tests {
 
     use redis_client::handlers::redis::download_dump_key::download_dump_key;
 
-    use crate::src::common::{load_test_params, TestSetup};
+    use crate::common::common::{load_test_params, TestSetup};
 
     #[actix_rt::test]
     async fn api_download_dump_key_test() {

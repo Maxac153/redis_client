@@ -12,4 +12,10 @@ impl StatusKey {
         self.search_key = search_key.to_string();
         self
     }
+
+    pub fn build(self) -> StatusKey {
+        StatusKey {
+            search_key: self.search_key,
+        }
+    }
 }

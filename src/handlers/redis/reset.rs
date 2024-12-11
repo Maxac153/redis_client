@@ -10,6 +10,15 @@ pub struct ResetKeyRequest {
     key: String,
 }
 
+#[utoipa::path(
+    tag = "Redis Client",
+    description = "Redis Reset Key - Удалить данные из базы с определённым ключом",
+    delete,
+    path = "/resetKey",
+    params(
+        ("key" = String, Query, description = "Name of the key", example = "listKey"),
+    ),
+)]
 #[delete("/resetKey")]
 pub async fn reset_key(
     pool: web::Data<Pool<RedisConnectionManager>>,
@@ -47,6 +56,12 @@ pub async fn reset_key(
     res
 }
 
+#[utoipa::path(
+    tag = "Redis Client",
+    description = "Redis Reset All Keys - Удалить все данные из Redis",
+    delete,
+    path = "/resetAllKeys"
+)]
 #[delete("/resetAllKeys")]
 pub async fn reset_all_keys(pool: web::Data<Pool<RedisConnectionManager>>) -> impl Responder {
     let mut con: PooledConnection<RedisConnectionManager> = match pool.get() {

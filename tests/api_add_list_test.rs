@@ -1,4 +1,4 @@
-mod src;
+mod common;
 
 #[cfg(test)]
 mod tests {
@@ -10,7 +10,7 @@ mod tests {
 
     use r2d2_redis::redis::Commands;
 
-    use crate::src::{
+    use crate::common::{
         common::{load_test_params, TestSetup},
         data_structures::add::AddKey,
     };
@@ -25,41 +25,48 @@ mod tests {
         let pool = test_setup.init_pool();
         let mut con = pool.get().unwrap();
 
-        let app = test::init_service(App::new().app_data(web::Data::new(pool)).service(add_list)).await;
+        let app =
+            test::init_service(App::new().app_data(web::Data::new(pool)).service(add_list)).await;
 
         let test_cases = [
             (
-                "Проверка записи в начало очереди.".to_string(),
+                "Проверка записи в начало очереди.",
                 AddKey::default()
                     .key("add_key")
                     .add_mod("FIRST")
-                    .body_data("{\"data\": \"One\"}"),
+                    .body_data("{\"data\": \"One\"}")
+                    .build(),
                 Response::default()
                     .status("OK")
                     .message("Data added successfully.")
-                    .data(""),
+                    .data("")
+                    .build(),
             ),
             (
-                "Проверка записи в конец очереди.".to_string(),
+                "Проверка записи в конец очереди.",
                 AddKey::default()
                     .key("add_key")
                     .add_mod("LAST")
-                    .body_data("{\"data\": \"Two\"}"),
+                    .body_data("{\"data\": \"Two\"}")
+                    .build(),
                 Response::default()
                     .status("OK")
                     .message("Data added successfully.")
-                    .data(""),
+                    .data("")
+                    .build(),
             ),
             (
-                "Проверка некорректного add_mode.".to_string(),
+                "Проверка некорректного add_mode.",
                 AddKey::default()
                     .key("add_key")
                     .add_mod("ERROR_ADD_MODE")
-                    .body_data("{\"data\": \"Hello Redis!\"}"),
+                    .body_data("{\"data\": \"Hello Redis!\"}")
+                    .build(),
                 Response::default()
                     .status("KO")
                     .message("Incorrect operation (ERROR_ADD_MODE), expected (FIRST, LAST)!")
-                    .data(""),
+                    .data("")
+                    .build(),
             ),
         ];
 

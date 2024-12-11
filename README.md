@@ -22,13 +22,19 @@ Postman collection можно посмотреть в папке **postman**.
 6. **Redis Reset All Keys** - Удалить все данные из Redis;
 7. **Redis Change TTL** - Смена TTL (изменение времени жизни данных);
 8. **Redis Rename Key** - Изменение имени ключа в Redis;
-9. **Redis Main Page** - Запрос статуса;
+9. **Redis Main Page** - Запрос статуса (Main Page);
 10. **Redis Status Key** - Запрос статуса ключа;
 11. **Redis Status Json** - Запрос статуса в формате Json;
 12. **Redis Download Dump Key** - Скачивание дампа по ключу из Redis;
 13. **Redis Download Dump All Keys** - Скачивание дампа всех ключей из Redis;
 14. **Redis Upload Dump Key** - Загрузка дампа в Redis;
 15. **Redis Upload Dump All Keys** - Загрузка дампа со всеми ключами в Redis.
+
+## Swagger
+
+![redis-client-swagger.png](img/redis-client-swagger.png)
+
+Ссылка на Swagger: <http://localhost:8080/swagger-ui/#/>
 
 ## Как развернуть Redis-Client в Docker
 
@@ -93,7 +99,7 @@ docker exec -it redis redis-cli
 - 2.1 Сборка докер образа из файла Dockerfile.
 
 ```bash
-sudo docker build -t redis-client-rust .
+sudo docker build -t redis-client-rust:v1.0 .
 ```
 
 - 2.2 Сохранение образа в .tar архив.
@@ -112,7 +118,7 @@ sudo docker load -i redis-client-rust.tar
 
 ```bash
 sudo docker run --name redis-client-rust \
-            -d -p 8080:8080 \
+            -p 8080:8080 \
             -e REDIS_HOST=localhost \
             -e REDIS_PORT=6379 \
             -e REDIS_POOL_CONNECTION=100 \
@@ -121,7 +127,7 @@ sudo docker run --name redis-client-rust \
             -e MULTIPART_MEMORY_LIMIT=100 \
             -e REQUEST_TIMEOUT_SEC=60 \
             --rm \
-            redis-client-rust
+            redis-client-rust:v1.0
 ```
 
 Описание параметры запуска:
@@ -219,6 +225,8 @@ environment {
     }
     ```
 
+## Monitoring
+
 ## Вспомогательные Python скрипты
 
 ### 1. download_dumps.py
@@ -227,13 +235,13 @@ environment {
 
 Параметры:
 
-1. Хост redis-client (**0.0.0.0**);
+1. Хост redis-client (**localhost**);
 2. Порт redis-client (**8080**).
 
 Пример команда запуска:
 
 ```python
-python3 ./scripts/python/download_dump.py 0.0.0.0 8080
+python3 ./scripts/python/download_dump.py localhost 8080
 ```
 
 ### 2. upload_dumps.py
@@ -242,13 +250,13 @@ python3 ./scripts/python/download_dump.py 0.0.0.0 8080
 
 Параметры:
 
-1. Хост redis-client (**0.0.0.0**);
+1. Хост redis-client (**localhost**);
 2. Порт redis-client (**8080**).
 
 Пример команда запуска:
 
 ```python
-python3 ./scripts/python/upload_dumps.py 0.0.0.0 8080
+python3 ./scripts/python/upload_dumps.py localhost 8080
 ```
 
 ### 3. reset_keys.py
@@ -257,13 +265,13 @@ python3 ./scripts/python/upload_dumps.py 0.0.0.0 8080
 
 Параметры:
 
-1. Хост redis-client (**0.0.0.0**);
+1. Хост redis-client (**localhost**);
 2. Порт redis-client (**8080**).
 
 Пример команда запуска:
 
 ```python
-python3 ./scripts/python/reset_keys.py 0.0.0.0 8080
+python3 ./scripts/python/reset_keys.py localhost 8080
 ```
 
 ### 4. change_ttl.py
@@ -272,14 +280,14 @@ python3 ./scripts/python/reset_keys.py 0.0.0.0 8080
 
 Параметры:
 
-1. Хост redis-client (**0.0.0.0**);
+1. Хост redis-client (**localhost**);
 2. Порт redis-client (**8080**);
 3. TTL указывается в секундах (**3600**).
 
 Пример команда запуска:
 
 ```python
-python3 ./scripts/python/change_ttl.py 0.0.0.0 8080 3600
+python3 ./scripts/python/change_ttl.py localhost 8080 3600
 ```
 
 ## Вспомогательные Bash скрипты

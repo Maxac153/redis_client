@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 
-#[derive(Serialize, Deserialize, Default, Debug)]
+#[derive(Serialize, Deserialize, Default, Debug, ToSchema)]
 pub struct Response {
     status: String,
     message: String,
@@ -33,6 +34,14 @@ impl Response {
     pub fn data(mut self, data: &str) -> Self {
         self.data = data.to_string();
         self
+    }
+
+    pub fn build(self) -> Response {
+        Response {
+            status: self.status,
+            message: self.message,
+            data: self.data,
+        }
     }
 
     pub fn ok(message: String, data: String) -> Self {

@@ -1,4 +1,4 @@
-mod src;
+mod common;
 
 #[cfg(test)]
 mod tests {
@@ -10,7 +10,7 @@ mod tests {
     use r2d2_redis::redis::Commands;
     use redis_client::{handlers::redis::rename_key::rename_key, models::response::Response};
 
-    use crate::src::{
+    use crate::common::{
         common::{load_test_params, TestSetup},
         data_structures::rename::RenameKey,
     };
@@ -33,34 +33,40 @@ mod tests {
 
         let test_cases = [
             (
-                "Проверка переименования несуществующего ключа.".to_string(),
+                "Проверка переименования несуществующего ключа.",
                 RenameKey::default()
                     .old_name_key("ERROR_KEY")
-                    .new_name_key("new_name_key_test"),
+                    .new_name_key("new_name_key_test")
+                    .build(),
                 Response::default()
                     .status("KO")
                     .message("An error was signalled by the server: no such key")
-                    .data(""),
+                    .data("")
+                    .build(),
             ),
             (
-                "Проверка переименования ключа (new name уже есть в базе).".to_string(),
+                "Проверка переименования ключа (new name уже есть в базе).",
                 RenameKey::default()
                     .old_name_key("old_name_key_test")
-                    .new_name_key("old_name_key_test"),
+                    .new_name_key("old_name_key_test")
+                    .build(),
                 Response::default()
                     .status("KO")
                     .message("A key (old_name_key_test) with this name already exists!")
-                    .data(""),
+                    .data("")
+                    .build(),
             ),
             (
-                "Проверка изменения имени ключа.".to_string(),
+                "Проверка изменения имени ключа.",
                 RenameKey::default()
                     .old_name_key("old_name_key_test")
-                    .new_name_key("new_name_key_test"),
+                    .new_name_key("new_name_key_test")
+                    .build(),
                 Response::default()
                     .status("OK")
                     .message("Key (old_name_key_test -> new_name_key_test) successfully renamed")
-                    .data(""),
+                    .data("")
+                    .build(),
             ),
         ];
 

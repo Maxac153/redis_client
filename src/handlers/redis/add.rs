@@ -27,6 +27,17 @@ async fn add_to_redis(
     }
 }
 
+#[utoipa::path(
+    tag = "Redis Client",
+    description = "Redis Add List Data - Добавить запись по ключу (List)",
+    post,
+    path = "/addList",
+    params(
+        ("key" = String, Query, description = "Name of the key", example = "listKey"),
+        ("add_mode" = String, Query, description = "Choose either FIRST or LAST", example = "LAST")
+    ),
+    request_body = String,
+)]
 #[post("/addList")]
 pub async fn add_list(
     pool: web::Data<Pool<RedisConnectionManager>>,
@@ -52,15 +63,26 @@ pub async fn add_list(
 }
 
 #[derive(Deserialize)]
-pub struct AddSetRequest {
+pub struct AddHashRequest {
     key: String,
     field: String,
 }
 
+#[utoipa::path(
+    tag = "Redis Client",
+    description = "Redis Add Hash Data - Добавить запись по ключу (Hash)",
+    post,
+    path = "/addHash",
+    params(
+        ("key" = String, Query, description = "Name of the key", example = "hashKey"),
+        ("field" = String, Query, description = "Name of the field", example = "field")
+    ),
+    request_body = String,
+)]
 #[post("/addHash")]
 pub async fn add_hash(
     pool: web::Data<Pool<RedisConnectionManager>>,
-    query: web::Query<AddSetRequest>,
+    query: web::Query<AddHashRequest>,
     data: String,
 ) -> impl Responder {
     let mut con: PooledConnection<RedisConnectionManager> = match pool.get() {
@@ -72,7 +94,8 @@ pub async fn add_hash(
         }
     };
 
-    let res: HttpResponse = match con.hset::<&str, &str, String, ()>(&query.key, &query.field, data){
+    let res: HttpResponse = match con.hset::<&str, &str, String, ()>(&query.key, &query.field, data)
+    {
         Ok(_) => HttpResponse::Created().json(Response::ok(
             "Data added successfully.".to_string(),
             "".to_string(),

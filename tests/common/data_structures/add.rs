@@ -42,4 +42,13 @@ impl AddKey {
         self.body_data = body_data.to_string();
         self
     }
+
+    pub fn build(self) -> AddKey {
+        AddKey {
+            key: self.key,
+            add_mod: self.add_mod,
+            field: self.field,
+            body_data: self.body_data,
+        }
+    }
 }

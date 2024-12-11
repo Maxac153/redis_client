@@ -1,8 +1,8 @@
-mod src;
+mod common;
 
 #[cfg(test)]
 mod tests {
-    use crate::src::{
+    use crate::common::{
         common::{load_test_params, TestSetup},
         data_structures::upload_dump::UploadDump,
     };
@@ -34,44 +34,52 @@ mod tests {
 
         let test_cases = [
             (
-                "Проверка загрузки дампа.".to_string(),
+                "Проверка загрузки дампа.",
                 UploadDump::default()
                     .file_path("./tests/resources/upload_dump_all_keys.rdb")
-                    .file_name("upload_dump_all_keys.rdb"),
+                    .file_name("upload_dump_all_keys.rdb")
+                    .build(),
                 Response::default()
                     .status("OK")
                     .message("Files uploaded successfully!")
-                    .data(""),
+                    .data("")
+                    .build(),
             ),
             (
-                "Проверка загрузки дампа с некорректными данными.".to_string(),
+                "Проверка загрузки дампа с некорректными данными.",
                 UploadDump::default()
                     .file_path("./tests/resources/error_data_dump_all_keys.rdb")
-                    .file_name("error_data_dump_all_keys.rdb"),
+                    .file_name("error_data_dump_all_keys.rdb")
+                    .build(),
                 Response::default()
                     .status("KO")
                     .message("An error was signalled by the server: DUMP payload version or checksum are wrong")
-                    .data(""),
+                    .data("")
+                    .build(),
             ),
             (
-                "Проверка загрузки пустого дампа.".to_string(),
+                "Проверка загрузки пустого дампа.",
                 UploadDump::default()
                     .file_path("./tests/resources/empty_dump_all_keys.rdb")
-                    .file_name("empty_dump_all_keys.rdb"),
+                    .file_name("empty_dump_all_keys.rdb")
+                    .build(),
                 Response::default()
                     .status("KO")
                     .message("Uploaded file is empty.")
-                    .data(""),
+                    .data("")
+                    .build(),
             ),
             (
-                "Проверка загрузки пустого дампа.".to_string(),
+                "Проверка загрузки пустого дампа.",
                 UploadDump::default()
                     .file_path("./tests/resources/incorrect_file_extension_all_keys.txt")
-                    .file_name("incorrect_file_extension_all_keys.txt"),
+                    .file_name("incorrect_file_extension_all_keys.txt")
+                    .build(),
                 Response::default()
                     .status("KO")
                     .message("Invalid file format. Expected '.rdb'.")
-                    .data(""),
+                    .data("")
+                    .build(),
             ),
         ];
 

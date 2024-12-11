@@ -1,4 +1,4 @@
-mod src;
+mod common;
 
 #[cfg(test)]
 mod tests {
@@ -10,7 +10,7 @@ mod tests {
     use r2d2_redis::redis::Commands;
     use redis_client::{handlers::redis::change_ttl::change_ttl, models::response::Response};
 
-    use crate::src::{
+    use crate::common::{
         common::{load_test_params, TestSetup},
         data_structures::change_ttl::ChangeTtl,
     };
@@ -33,28 +33,31 @@ mod tests {
 
         let test_cases = [
             (
-                "Проверка записи в начало очереди.".to_string(),
-                ChangeTtl::default().key("change_ttl_key").ttl(120),
+                "Проверка записи в начало очереди.",
+                ChangeTtl::default().key("change_ttl_key").ttl(120).build(),
                 Response::default()
                     .status("OK")
                     .message("TTL successfully changed, key (change_ttl_key), ttl (120 sec).")
-                    .data(""),
+                    .data("")
+                    .build(),
             ),
             (
-                "Проверка записи в конец очереди.".to_string(),
-                ChangeTtl::default().key("change_ttl_key").ttl(0),
+                "Проверка записи в конец очереди.",
+                ChangeTtl::default().key("change_ttl_key").ttl(0).build(),
                 Response::default()
                     .status("OK")
                     .message("Expiration removed for key (change_ttl_key).")
-                    .data(""),
+                    .data("")
+                    .build(),
             ),
             (
-                "Проверка некорректного redis_key.".to_string(),
-                ChangeTtl::default().key("error_key").ttl(120),
+                "Проверка некорректного redis_key.",
+                ChangeTtl::default().key("error_key").ttl(120).build(),
                 Response::default()
                     .status("KO")
                     .message("Key (error_key) does not exist!")
-                    .data(""),
+                    .data("")
+                    .build(),
             ),
         ];
 

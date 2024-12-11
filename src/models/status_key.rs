@@ -1,11 +1,12 @@
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 
 use super::type_key::TypeKey;
 
-#[derive(Debug, Default, Serialize, Deserialize)]
+#[derive(Debug, Default, Serialize, Deserialize, ToSchema)]
 pub struct StatusKey {
     key: String,
-    type_key: TypeKey,
+    type_key: Option<TypeKey>,
     len: i32,
     memory_usage: u32,
     ttl: i32,
@@ -16,8 +17,11 @@ impl StatusKey {
         &self.key
     }
 
-    pub fn get_type_key(&self) -> &str {
-        &self.type_key.as_str()
+    pub fn get_type_key(&self) -> Option<&str> {
+        match &self.type_key {
+            Some(key) => Some(key.as_str()),
+            None => None,
+        }
     }
 
     pub fn get_len(&self) -> i32 {
@@ -32,28 +36,13 @@ impl StatusKey {
         self.ttl
     }
 
-    pub fn key(mut self, key: &str) -> Self {
-        self.key = key.to_string();
-        self
-    }
-
-    pub fn type_key(mut self, type_key: TypeKey) -> Self {
-        self.type_key = type_key;
-        self
-    }
-
-    pub fn len(mut self, len: i32) -> Self {
-        self.len = len;
-        self
-    }
-
-    pub fn memory_usage(mut self, memory_usage: u32) -> Self {
-        self.memory_usage = memory_usage;
-        self
-    }
-
-    pub fn ttl(mut self, ttl: i32) -> Self {
-        self.ttl = ttl;
-        self
+    pub fn new(key: String, type_key: Option<TypeKey>, len: i32, memory_usage: u32, ttl: i32) -> Self {
+        StatusKey {
+            key,
+            type_key,
+            len,
+            memory_usage,
+            ttl,
+        }
     }
 }

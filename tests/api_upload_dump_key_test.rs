@@ -1,8 +1,8 @@
-mod src;
+mod common;
 
 #[cfg(test)]
 mod tests {
-    use crate::src::{
+    use crate::common::{
         common::{load_test_params, TestSetup},
         data_structures::upload_dump::UploadDump,
     };
@@ -13,7 +13,9 @@ mod tests {
         App,
     };
     use r2d2_redis::redis::Commands;
-    use redis_client::{handlers::redis::upload_dump_key::upload_dump_key, models::response::Response};
+    use redis_client::{
+        handlers::redis::upload_dump_key::upload_dump_key, models::response::Response,
+    };
 
     #[actix_rt::test]
     async fn api_upload_dump_key_test() {
@@ -32,44 +34,52 @@ mod tests {
 
         let test_cases = [
             (
-                "Проверка загрузки дампа.".to_string(),
+                "Проверка загрузки дампа.",
                 UploadDump::default()
                     .file_path("./tests/resources/upload_dump_key.dump")
-                    .file_name("upload_dump_key.dump"),
+                    .file_name("upload_dump_key.dump")
+                    .build(),
                 Response::default()
                     .status("OK")
                     .message("Files uploaded successfully!")
-                    .data(""),
+                    .data("")
+                    .build(),
             ),
             (
-                "Проверка загрузки дампа с некорректными данными.".to_string(),
+                "Проверка загрузки дампа с некорректными данными.",
                 UploadDump::default()
                     .file_path("./tests/resources/error_data_dump_key.dump")
-                    .file_name("error_data_dump_key.dump"),
+                    .file_name("error_data_dump_key.dump")
+                    .build(),
                 Response::default()
                     .status("KO")
                     .message("An error was signalled by the server: DUMP payload version or checksum are wrong")
-                    .data(""),
+                    .data("")
+                    .build(),
             ),
             (
-                "Проверка загрузки пустого дампа.".to_string(),
+                "Проверка загрузки пустого дампа.",
                 UploadDump::default()
                     .file_path("./tests/resources/empty_dump_key.dump")
-                    .file_name("empty_dump_key.dump"),
+                    .file_name("empty_dump_key.dump")
+                    .build(),
                 Response::default()
                     .status("KO")
                     .message("An error was signalled by the server: DUMP payload version or checksum are wrong")
-                    .data(""),
+                    .data("")
+                    .build(),
             ),
             (
-                "Проверка загрузки пустого дампа.".to_string(),
+                "Проверка загрузки пустого дампа.",
                 UploadDump::default()
                     .file_path("./tests/resources/incorrect_file_extension_key.txt")
-                    .file_name("incorrect_file_extension_all_keys.txt"),
+                    .file_name("incorrect_file_extension_all_keys.txt")
+                    .build(),
                 Response::default()
                     .status("KO")
                     .message("Invalid file format. Expected '.dump'.")
-                    .data(""),
+                    .data("")
+                    .build(),
             ),
         ];
 

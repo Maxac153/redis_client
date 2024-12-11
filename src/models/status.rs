@@ -1,8 +1,9 @@
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 
 use super::status_key::StatusKey;
 
-#[derive(Debug, Default, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct StatusJson {
     connected_clients: u32,
     total_memory_usage: String,
@@ -27,23 +28,17 @@ impl StatusJson {
         &self.statuses
     }
 
-    pub fn connected_clients(mut self, connected_clients: u32) -> Self {
-        self.connected_clients = connected_clients;
-        self
-    }
-
-    pub fn total_memory_usage(mut self, total_memory_usage: String) -> Self {
-        self.total_memory_usage = total_memory_usage;
-        self
-    }
-
-    pub fn keys(mut self, keys: Vec<String>) -> Self {
-        self.keys = keys;
-        self
-    }
-
-    pub fn statuses(mut self, statuses: Vec<StatusKey>) -> Self {
-        self.statuses = statuses;
-        self
+    pub fn new(
+        connected_clients: u32,
+        total_memory_usage: String,
+        keys: Vec<String>,
+        statuses: Vec<StatusKey>,
+    ) -> Self {
+        StatusJson {
+            connected_clients,
+            total_memory_usage,
+            keys,
+            statuses,
+        }
     }
 }

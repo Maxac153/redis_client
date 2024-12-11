@@ -42,4 +42,13 @@ impl StatusJson {
         self.upper_limit = upper_limit;
         self
     }
+
+    pub fn build(self) -> StatusJson {
+        StatusJson {
+            search_key: self.search_key,
+            type_key: self.type_key,
+            lower_limit: self.lower_limit,
+            upper_limit: self.upper_limit,
+        }
+    }
 }

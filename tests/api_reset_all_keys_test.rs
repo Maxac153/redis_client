@@ -1,4 +1,4 @@
-mod src;
+mod common;
 
 #[cfg(test)]
 mod tests {
@@ -10,7 +10,7 @@ mod tests {
     use r2d2_redis::redis::Commands;
     use redis_client::{handlers::redis::reset::reset_all_keys, models::response::Response};
 
-    use crate::src::common::{load_test_params, TestSetup};
+    use crate::common::common::{load_test_params, TestSetup};
 
     #[actix_rt::test]
     async fn api_reset_all_keys_test() {
@@ -33,7 +33,8 @@ mod tests {
             Response::default()
                 .status("OK")
                 .message("Deleted all keys successfully.")
-                .data(""),
+                .data("")
+                .build(),
         )];
 
         for (_, response) in test_cases {

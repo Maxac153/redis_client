@@ -22,4 +22,11 @@ impl RenameKey {
         self.new_name_key = new_name_key.to_string();
         self
     }
+
+    pub fn build(self) -> RenameKey {
+        RenameKey {
+            old_name_key: self.old_name_key,
+            new_name_key: self.new_name_key,
+        }
+    }
 }

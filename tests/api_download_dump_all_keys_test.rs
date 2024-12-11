@@ -1,4 +1,4 @@
-mod src;
+mod common;
 
 #[cfg(test)]
 mod tests {
@@ -8,7 +8,7 @@ mod tests {
         web, App,
     };
 
-    use crate::src::common::{load_test_params, TestSetup};
+    use crate::common::common::{load_test_params, TestSetup};
     use redis_client::handlers::redis::download_dump_key::download_dump_all_keys;
 
     #[actix_rt::test]

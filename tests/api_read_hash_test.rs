@@ -1,4 +1,4 @@
-mod src;
+mod common;
 
 #[cfg(test)]
 mod tests {
@@ -9,7 +9,7 @@ mod tests {
 
     use redis_client::{handlers::redis::read::read_hash, models::response::Response};
 
-    use crate::src::{
+    use crate::common::{
         common::{load_test_params, TestSetup},
         data_structures::read::ReadKey,
     };
@@ -30,20 +30,22 @@ mod tests {
 
         let test_cases = [
             (
-                "Проверка чтения из начала очереди.".to_string(),
-                ReadKey::default().key("read_hash_key"),
+                "Проверка чтения из начала очереди.",
+                ReadKey::default().key("read_hash_key").build(),
                 Response::default()
                     .status("OK")
                     .message("Data read successfully.")
-                    .data("{\n  \"field\": {\n    \"data\": \"one\"\n  }\n}"),
+                    .data("{\n  \"field\": {\n    \"data\": \"one\"\n  }\n}")
+                    .build(),
             ),
             (
-                "Проверка чтения несуществующего ключа.".to_string(),
-                ReadKey::default().key("read_error_key"),
+                "Проверка чтения несуществующего ключа.",
+                ReadKey::default().key("read_error_key").build(),
                 Response::default()
                     .status("KO")
                     .message("Hash not found!")
-                    .data(""),
+                    .data("")
+                    .build(),
             ),
         ];
 

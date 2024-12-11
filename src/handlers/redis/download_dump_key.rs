@@ -20,6 +20,15 @@ pub struct DownloadDumpRequest {
     key: String,
 }
 
+#[utoipa::path(
+    tag = "Redis Client",
+    description = "Redis Download Dump Key - Скачивание дампа по ключу из Redis",
+    get,
+    path = "/downloadDumpKey",
+    params(
+        ("key" = String, Query, description = "Name of the key", example = "listKey"),
+    ),
+)]
 #[get("/downloadDumpKey")]
 pub async fn download_dump_key(
     pool: web::Data<Pool<RedisConnectionManager>>,
@@ -49,6 +58,10 @@ pub async fn download_dump_key(
     match dump_key(&mut con, &query.key) {
         Ok(dump) => HttpResponse::Ok()
             .content_type("application/octet-stream")
+            .insert_header((
+                "Content-Disposition",
+                format!("attachment; filename=\"{}.dump\"", query.key),
+            ))
             .body(dump),
         Err(err) => return HttpResponse::BadRequest().json(Response::error(err.to_string())),
     }
@@ -72,6 +85,12 @@ fn hashmap_to_vec(hashmap: HashMap<String, Vec<u8>>) -> Vec<u8> {
     result
 }
 
+#[utoipa::path(
+    tag = "Redis Client",
+    description = "Redis Download Dump All Keys - Скачивание дампа всех ключей из Redis",
+    get,
+    path = "/downloadDumpAllKeys"
+)]
 #[get("/downloadDumpAllKeys")]
 pub async fn download_dump_all_keys(
     pool: web::Data<Pool<RedisConnectionManager>>,
@@ -97,12 +116,12 @@ pub async fn download_dump_all_keys(
             .json(Response::error("No keys found in Redis!".to_string()));
     }
 
-    let mut people: HashMap<String, Vec<u8>> = HashMap::new();
+    let mut key_file: HashMap<String, Vec<u8>> = HashMap::new();
 
     for key in keys {
         match dump_key(&mut con, &key) {
             Ok(dump) => {
-                people.insert(key, dump);
+                key_file.insert(key, dump);
             }
             Err(err) => {
                 return HttpResponse::BadRequest().json(Response::error(format!(
@@ -115,5 +134,9 @@ pub async fn download_dump_all_keys(
 
     HttpResponse::Ok()
         .content_type("application/octet-stream")
-        .body(hashmap_to_vec(people))
+        .insert_header((
+            "Content-Disposition",
+            "attachment; filename=\"dump_all_keys.rdb\"",
+        ))
+        .body(hashmap_to_vec(key_file))
 }

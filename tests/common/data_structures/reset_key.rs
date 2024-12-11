@@ -1,16 +1,11 @@
 #[derive(Debug, Default)]
-pub struct ChangeTtl {
+pub struct ResetKey {
     key: String,
-    ttl: i64,
 }
 
-impl ChangeTtl {
+impl ResetKey {
     pub fn get_key(&self) -> &str {
         &self.key
-    }
-
-    pub fn get_ttl(&self) -> i64 {
-        self.ttl
     }
 
     pub fn key(mut self, key: &str) -> Self {
@@ -18,8 +13,9 @@ impl ChangeTtl {
         self
     }
 
-    pub fn ttl(mut self, new_ttl: i64) -> Self {
-        self.ttl = new_ttl;
-        self
+    pub fn build(self) -> ResetKey {
+        ResetKey {
+            key: self.key,
+        }
     }
 }

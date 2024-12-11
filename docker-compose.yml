@@ -15,6 +15,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    image: redis-client-rust:v1.0
+    container_name: redis-client-rust
     environment:
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PORT=${REDIS_PORT}
@@ -23,12 +25,8 @@ services:
       - MULTIPART_TOTAL_LIMIT=${MULTIPART_TOTAL_LIMIT}
       - MULTIPART_MEMORY_LIMIT=${MULTIPART_MEMORY_LIMIT}
       - REQUEST_TIMEOUT_SEC=${REQUEST_TIMEOUT_SEC}
-    container_name: redis-client-rust
-    volumes:
-      - .:/app
-    working_dir: /app
     ports:
-      - "${APP_PORT}:8000"
+      - "${APP_PORT}:8080"
     depends_on:
       - redis
     networks:

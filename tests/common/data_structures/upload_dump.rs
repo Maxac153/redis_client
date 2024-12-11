@@ -22,4 +22,11 @@ impl UploadDump {
         self.file_name = file_name.to_string();
         self
     }
+
+    pub fn build(self) -> UploadDump {
+        UploadDump {
+            file_path: self.file_path,
+            file_name: self.file_name,
+        }
+    }
 }

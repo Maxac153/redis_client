@@ -1,4 +1,4 @@
-mod src;
+mod common;
 
 #[cfg(test)]
 mod tests {
@@ -10,7 +10,7 @@ mod tests {
 
     use r2d2_redis::redis::Commands;
 
-    use crate::src::{
+    use crate::common::{
         common::{load_test_params, TestSetup},
         data_structures::add::AddKey,
     };
@@ -29,26 +29,30 @@ mod tests {
 
         let test_cases = [
             (
-                "Проверка добавлеения поля в Hash (поле field_one).".to_string(),
+                "Проверка добавлеения поля в Hash (поле field_one).",
                 AddKey::default()
                     .key("add_hash_key")
                     .field("field_one")
-                    .body_data("{\"data\": \"One\"}"),
+                    .body_data("{\"data\": \"One\"}")
+                    .build(),
                 Response::default()
                     .status("OK")
                     .message("Data added successfully.")
-                    .data(""),
+                    .data("")
+                    .build(),
             ),
             (
-                "Проверка добавления второго поля (поле field_two).".to_string(),
+                "Проверка добавления второго поля (поле field_two).",
                 AddKey::default()
                     .key("add_hash_key")
                     .field("field_two")
-                    .body_data("{\"data\": \"Two\"}"),
+                    .body_data("{\"data\": \"Two\"}")
+                    .build(),
                 Response::default()
                     .status("OK")
                     .message("Data added successfully.")
-                    .data(""),
+                    .data("")
+                    .build(),
             ),
         ];
 

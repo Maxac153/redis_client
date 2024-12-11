@@ -1,0 +1,5 @@
+scrape_config:
+  - job_name: 'redis-client'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['redis_client:8080']

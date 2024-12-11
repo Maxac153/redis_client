@@ -32,6 +32,16 @@ async fn read_from_redis(
     }
 }
 
+#[utoipa::path(
+    tag = "Redis Client",
+    description = "Redis Read List Data - Чтение из базы по ключу (List)",
+    get,
+    path = "/readList",
+    params(
+        ("key" = String, Query, description = "Name of the key", example = "listKey"),
+        ("read_mode" = String, Query, description = "Choose either FIRST or LAST", example = "LAST")
+    ),
+)]
 #[get("/readList")]
 pub async fn read_list(
     pool: web::Data<Pool<RedisConnectionManager>>,
@@ -75,6 +85,15 @@ pub struct ReadHashRequest {
     key: String,
 }
 
+#[utoipa::path(
+    tag = "Redis Client",
+    description = "Redis Read Hash Data - Чтение из базы по ключу (Hash)",
+    get,
+    path = "/readHash",
+    params(
+        ("key" = String, Query, description = "Name of the key", example = "hashKey"),
+    ),
+)]
 #[get("/readHash")]
 pub async fn read_hash(
     pool: web::Data<Pool<RedisConnectionManager>>,

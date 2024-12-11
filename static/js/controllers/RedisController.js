@@ -36,28 +36,30 @@ export class RedisController {
         for (let i = 0; i < storageLength; i++) {
             const key = localStorage.key(i);
             const value = localStorage.getItem(key);
-            if (key == 'tabOpen') {
-                document.getElementById(value).click();
-            } else if (key == 'inputRefreshRate') {
-                let pageElement = document.getElementById(key);
-                pageElement.value = value;
+            if (value !== 'null') {
+                if (key == 'tabOpen') {
+                    document.getElementById(value).click();
+                } else if (key == 'inputRefreshRate') {
+                    let pageElement = document.getElementById(key);
+                    pageElement.value = value;
 
-                if (localStorage.getItem('checkboxRefresh') !== null) {
-                    document.getElementById("checkboxRefresh").click();
+                    if (localStorage.getItem('checkboxRefresh') === 'true') {
+                        document.getElementById("checkboxRefresh").click();
+                    }
+                } else if (key == 'readTypeKey') {
+                    let pageElement = document.getElementById(key);
+                    pageElement.value = value;
+                    this.tabReadModel.setReadTypeKey(value);
+                    this.choiceTypeReadKey();
+                } else if (key == 'addTypeKey') {
+                    let pageElement = document.getElementById(key);
+                    pageElement.value = value;
+                    this.tabAddModel.setAddTypeKey(value);
+                    this.choiceTypeAddKey();
+                } else {
+                    let pageElement = document.getElementById(key);
+                    pageElement.value = value;
                 }
-            } else if (key == 'readTypeKey') {
-                let pageElement = document.getElementById(key);
-                pageElement.value = value;
-                this.tabReadModel.setReadTypeKey(value);
-                this.choiceTypeReadKey();
-            } else if (key == 'addTypeKey') {
-                let pageElement = document.getElementById(key);
-                pageElement.value = value;
-                this.tabAddModel.setAddTypeKey(value);
-                this.choiceTypeAddKey();
-            } else {
-                let pageElement = document.getElementById(key);
-                pageElement.value = value;
             }
         }
     }

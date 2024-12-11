@@ -9,7 +9,7 @@ pub mod handlers {
         pub mod read;
         pub mod rename_key;
         pub mod reset;
-        pub mod status_json;
+        pub mod status;
         pub mod upload_dump_key;
     }
 }

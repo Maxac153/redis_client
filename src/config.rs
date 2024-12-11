@@ -18,7 +18,7 @@ fn get_env_var(key: &str, default: &str) -> String {
 impl Config {
     pub fn new() -> Config {
         Config {
-            redis_host: get_env_var("REDIS_HOST", "127.0.0.1"),
+            redis_host: get_env_var("REDIS_HOST", "0.0.0.0"),
             redis_port: get_env_var("REDIS_PORT", "6379"),
             redis_pool_connection: get_env_var("REDIS_POOL_CONNECTION", "10")
                 .parse::<u32>()

@@ -11,6 +11,16 @@ pub struct RenameKeyRequest {
     new_name_key: String,
 }
 
+#[utoipa::path(
+    tag = "Redis Client",
+    description = "Redis Rename Key - Изменение имени ключа в Redis",
+    patch,
+    path = "/renameKey",
+    params(
+        ("old_name_key" = String, Query, description = "Old name key", example = "listKey"),
+        ("new_name_key" = String, Query, description = "New name key", example = "new_listKey"),
+    ),
+)]
 #[patch("/renameKey")]
 pub async fn rename_key(
     pool: web::Data<Pool<RedisConnectionManager>>,

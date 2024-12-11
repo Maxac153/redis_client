@@ -17,11 +17,6 @@ fn restore(con: &mut redis::Connection, key: String, data: Vec<u8>) -> RedisResu
     Ok(status)
 }
 
-#[derive(Debug, MultipartForm)]
-struct UploadForm {
-    dump: TempFile,
-}
-
 fn validate_file_name(file_name: &str, file_extension: &str) -> Result<String, String> {
     if file_name.ends_with(file_extension) {
         match file_name.split_once('.') {
@@ -36,6 +31,12 @@ fn validate_file_name(file_name: &str, file_extension: &str) -> Result<String, S
     }
 }
 
+#[utoipa::path(
+    tag = "Redis Client",
+    description = "Redis Upload Dump Key - Загрузка дампа в Redis",
+    post,
+    path = "/uploadDumpKey"
+)]
 #[post("/uploadDumpKey")]
 pub async fn upload_dump_key(
     pool: web::Data<Pool<RedisConnectionManager>>,
@@ -125,6 +126,21 @@ fn vec_to_hashmap(data: Vec<u8>) -> Result<HashMap<String, Vec<u8>>, String> {
     Ok(result)
 }
 
+#[derive(Debug, MultipartForm)]
+struct UploadForm {
+    dump: TempFile,
+}
+
+#[utoipa::path(
+    tag = "Redis Client",
+    description = "Redis Upload Dump All Keys - Загрузка дампа со всеми ключами в Redis",
+    post,
+    path = "/uploadDumpAllKeys",
+    request_body(
+        content_type = "multipart/form-data",
+        description = "Файл для загрузки",
+    )
+)]
 #[post("/uploadDumpAllKeys")]
 pub async fn upload_dump_all_keys(
     pool: web::Data<Pool<RedisConnectionManager>>,

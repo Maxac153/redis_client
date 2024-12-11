@@ -29,8 +29,10 @@ RUN cargo build --target x86_64-unknown-linux-musl --release
 # Этап выполнения
 FROM alpine:latest
 
-COPY --from=builder /usr/src/redis_client/target/x86_64-unknown-linux-musl/release/redis_client /redis_client
-COPY --from=builder /usr/src/redis_client/static /static
-COPY --from=builder /usr/src/redis_client/templates /templates
+WORKDIR /home
 
-CMD ["/redis_client"]
+COPY --from=builder /usr/src/redis_client/target/x86_64-unknown-linux-musl/release/redis_client ./redis_client
+COPY --from=builder /usr/src/redis_client/static ./static
+COPY --from=builder /usr/src/redis_client/templates ./templates
+
+CMD ["./redis_client"]

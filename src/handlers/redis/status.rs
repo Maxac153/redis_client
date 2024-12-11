@@ -66,6 +66,18 @@ pub struct StatusJsonRequest {
     upper_limit: usize,
 }
 
+#[utoipa::path(
+    tag = "Redis Client",
+    description = "Redis Status Json - Запрос статуса в формате Json",
+    get,
+    path = "/statusJson",
+    params(
+        ("search_key" = Option<String>, Query, description = "Name of the key", example = ""),
+        ("type_key" = Option<String>, Query, description = "Type key <List, Hash>", example = "List"),
+        ("lower_limit" = String, Query, description = "upper_limit - lower_limit <= 30", example = "0"),
+        ("upper_limit" = String, Query, description = "", example = "30"),
+    ),
+)]
 #[get("/statusJson")]
 pub async fn status_json(
     pool: web::Data<Pool<RedisConnectionManager>>,
@@ -155,26 +167,25 @@ pub async fn status_json(
             if let (Ok(len), Ok(memory_usage), Ok(ttl)) =
                 (len_result, memory_usage_result, ttl_result)
             {
-                Some(
-                    StatusKey::default()
-                        .key(key)
-                        .len(len)
-                        .memory_usage(memory_usage)
-                        .ttl(ttl),
-                )
+                Some(StatusKey::new(
+                    key.to_string(),
+                    None,
+                    len,
+                    memory_usage,
+                    ttl,
+                ))
             } else {
                 None
             }
         })
         .collect();
 
-    HttpResponse::Ok().json(
-        StatusJson::default()
-            .connected_clients(num_clients)
-            .total_memory_usage(total_memory_usage)
-            .keys(keys)
-            .statuses(statuses),
-    )
+    HttpResponse::Ok().json(StatusJson::new(
+        num_clients,
+        total_memory_usage,
+        keys,
+        statuses,
+    ))
 }
 
 fn get_type_key(con: &mut redis::Connection, key: &str) -> redis::RedisResult<String> {
@@ -186,6 +197,13 @@ pub struct StatusKeyRequest {
     search_key: String,
 }
 
+#[utoipa::path(
+    tag = "Redis Client",
+    description = "Redis Status Key - Запрос статуса ключа",
+    get,
+    path = "/statusKey",
+    params(("search_key" = String, Query, description = "Name of the key", example = "listKey"))
+)]
 #[get("/statusKey")]
 pub async fn status_key(
     pool: web::Data<Pool<RedisConnectionManager>>,
@@ -261,12 +279,11 @@ pub async fn status_key(
         }
     };
 
-    HttpResponse::Ok().json(
-        StatusKey::default()
-            .key(&key)
-            .type_key(type_key.as_str().into())
-            .len(len)
-            .memory_usage(key_memory_usage)
-            .ttl(ttl),
-    )
+    HttpResponse::Ok().json(StatusKey::new(
+        key,
+        Some(TypeKey::from(type_key.as_str())),
+        len,
+        key_memory_usage,
+        ttl,
+    ))
 }

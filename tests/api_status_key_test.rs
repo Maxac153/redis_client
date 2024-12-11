@@ -1,4 +1,4 @@
-mod src;
+mod common;
 
 #[cfg(test)]
 mod tests {
@@ -8,9 +8,9 @@ mod tests {
     };
 
     use redis_client::models::status_key::StatusKey as SKM;
-    use redis_client::{handlers::redis::status_json::status_key, models::response::Response};
+    use redis_client::{handlers::redis::status::status_key, models::response::Response};
 
-    use crate::src::{
+    use crate::common::{
         common::{load_test_params, TestSetup},
         data_structures::status_key::StatusKey,
     };
@@ -35,14 +35,14 @@ mod tests {
 
         let test_cases = [
             (
-                "Проверка запроса статуса ключа.".to_string(),
+                "Проверка запроса статуса ключа.",
                 "OK",
-                StatusKey::default().search_key("status_key"),
+                StatusKey::default().search_key("status_key").build(),
             ),
             (
-                "Проверка получения информации по несуществующему ключу.".to_string(),
+                "Проверка получения информации по несуществующему ключу.",
                 "KO",
-                StatusKey::default().search_key("error_key"),
+                StatusKey::default().search_key("error_key").build(),
             ),
         ];
 
@@ -61,7 +61,7 @@ mod tests {
             if response_status == "OK" {
                 let result: SKM = serde_json::from_slice(&response_body).unwrap();
                 assert_eq!(key, result.get_key());
-                assert_eq!(result.get_type_key(), "list");
+                assert_eq!(result.get_type_key(), Some("list"));
                 assert_eq!(result.get_len(), 1);
                 assert_eq!(result.get_memory_usage(), 80);
                 assert_eq!(result.get_ttl(), -1)

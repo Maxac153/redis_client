@@ -1,4 +1,4 @@
-mod src;
+mod common;
 
 #[cfg(test)]
 mod tests {
@@ -9,7 +9,7 @@ mod tests {
 
     use redis_client::{handlers::redis::read::read_list, models::response::Response};
 
-    use crate::src::{
+    use crate::common::{
         common::{load_test_params, TestSetup},
         data_structures::read::ReadKey,
     };
@@ -30,38 +30,43 @@ mod tests {
 
         let test_cases = [
             (
-                "Проверка чтения из начала очереди.".to_string(),
-                ReadKey::default().key("read_key").read_mod("FIRST"),
+                "Проверка чтения из начала очереди.",
+                ReadKey::default().key("read_key").read_mod("FIRST").build(),
                 Response::default()
                     .status("OK")
                     .message("Data read successfully.")
-                    .data("one"),
+                    .data("one")
+                    .build(),
             ),
             (
-                "Проверка чтения из конца очереди.".to_string(),
-                ReadKey::default().key("read_key").read_mod("LAST"),
+                "Проверка чтения из конца очереди.",
+                ReadKey::default().key("read_key").read_mod("LAST").build(),
                 Response::default()
                     .status("OK")
                     .message("Data read successfully.")
-                    .data("three"),
+                    .data("three")
+                    .build(),
             ),
             (
-                "Проверка чтения из пустой базы.".to_string(),
-                ReadKey::default().key("error_key").read_mod("LAST"),
+                "Проверка чтения из пустой базы.",
+                ReadKey::default().key("error_key").read_mod("LAST").build(),
                 Response::default()
                     .status("KO")
                     .message("The key 'error_key' does not exist or is empty!")
-                    .data(""),
+                    .data("")
+                    .build(),
             ),
             (
-                "Проверка некорректного add_mode.".to_string(),
+                "Проверка некорректного add_mode.",
                 ReadKey::default()
                     .key("read_key")
-                    .read_mod("ERROR_READ_MODE"),
+                    .read_mod("ERROR_READ_MODE")
+                    .build(),
                 Response::default()
                     .status("KO")
                     .message("Incorrect operation (ERROR_READ_MODE), expected (FIRST, LAST)!")
-                    .data(""),
+                    .data("")
+                    .build(),
             ),
         ];
 
