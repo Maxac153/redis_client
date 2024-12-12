@@ -11,6 +11,28 @@ services:
     networks:
       - redis-client-rust-network
 
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "${PROMETHEUSE_PORT}:9090"
+    depends_on:
+      - redis-client-rust
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - redis-client-rust-network
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "${GRAFANA_PORT}:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - redis-client-rust-network
+
   redis-client-rust:
     build:
       context: .
@@ -29,6 +51,7 @@ services:
       - "${APP_PORT}:8080"
     depends_on:
       - redis
+      - grafana
     networks:
       - redis-client-rust-network
 
@@ -38,3 +61,4 @@ networks:
 
 volumes:
   redis-data:
+  grafana_data:

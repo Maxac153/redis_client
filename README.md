@@ -227,6 +227,18 @@ environment {
 
 ## Monitoring
 
+### App
+
+![grafana.png](img/grafana.png)
+
+Путь к шаблону: /monitoring/grafana/app/Redis Client Monitoring.json
+
+### Redis
+
+![grafana.png](img/redis.png)
+
+Путь к шаблону: /monitoring/grafana/redis/Redis.json
+
 ## Вспомогательные Python скрипты
 
 ### 1. download_dumps.py

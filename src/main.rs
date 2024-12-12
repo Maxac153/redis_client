@@ -3,6 +3,9 @@ use std::time::Duration;
 use actix_files::Files;
 use actix_multipart::form::MultipartFormConfig;
 use actix_web::{web, App, HttpServer};
+use actix_web_prom::{PrometheusMetrics, PrometheusMetricsBuilder};
+use prometheus::opts;
+use prometheus::IntCounterVec;
 use redis_client::{
     models::{response::Response, status::StatusJson, status_key::StatusKey},
     routes::{init_routes_pages::init_routes_pages, init_routes_redis::init_routes_redis},
@@ -61,17 +64,29 @@ async fn main() -> std::io::Result<()> {
     let redis_url: String = format!("{}:{}", config.get_redis_host(), config.get_redis_port());
     let manager = RedisConnectionManager::new(format!("redis://{}/", redis_url)).unwrap();
 
+    // Redis pool
     let redis_pool_connection: Pool<RedisConnectionManager> = Pool::builder()
         .max_size(config.get_redis_pool_connection())
         .test_on_check_out(false)
         .build(manager)
         .unwrap();
 
+    // Prometheus
+    let prometheus: PrometheusMetrics = PrometheusMetricsBuilder::new("api")
+        .endpoint("/metrics")
+        .build()
+        .unwrap();
+
+    let counter_opts = opts!("counter", "some random counter").namespace("api");
+    let counter = IntCounterVec::new(counter_opts, &["endpoint", "method", "status"]).unwrap();
+
     let multipart_total_limit = config.get_multipart_total_limit();
     let multipart_mermory_limit = config.get_multipart_mermory_limit();
 
     HttpServer::new(move || {
         App::new()
+            .wrap(prometheus.clone())
+            .app_data(web::Data::new(counter.clone()))
             .app_data(web::Data::new(
                 MultipartFormConfig::default()
                     .total_limit(multipart_total_limit * GB)
