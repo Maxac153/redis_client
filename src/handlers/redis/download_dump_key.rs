@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use crate::models::response::Response;
 
 use actix_web::{get, web, HttpResponse, Responder};
 use r2d2::{Pool, PooledConnection};
@@ -6,9 +6,8 @@ use r2d2_redis::{
     redis::{self, Commands, RedisResult},
     RedisConnectionManager,
 };
-
-use crate::models::response::Response;
 use serde::Deserialize;
+use std::collections::HashMap;
 
 fn dump_key(con: &mut redis::Connection, key: &str) -> RedisResult<Vec<u8>> {
     let dump_key: Vec<u8> = redis::cmd("DUMP").arg(key).query(con)?;

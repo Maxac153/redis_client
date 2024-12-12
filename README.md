@@ -123,8 +123,7 @@ sudo docker run --name redis-client-rust \
             -e REDIS_PORT=6379 \
             -e REDIS_POOL_CONNECTION=100 \
             -e WORKERS=16 \
-            -e MULTIPART_TOTAL_LIMIT=2 \
-            -e MULTIPART_MEMORY_LIMIT=100 \
+            -e PLAYLOAD_LIMIT=2 \
             -e REQUEST_TIMEOUT_SEC=60 \
             --rm \
             redis-client-rust:v1.0
@@ -136,9 +135,8 @@ sudo docker run --name redis-client-rust \
 2. **REDIS_PORT** - порт редис;
 3. **REDIS_POOL_CONNECTION** - пул подключений к редису;
 4. **WORKERS** - количество выделенных ядер;
-5. **MULTIPART_TOTAL_LIMIT** - предел загружаемого файла (**ГБ**);
-6. **MULTIPART_MEMORY_LIMIT** - выделенная ОЗУ для загрузки файла (**МБ**)
-7. **REQUEST_TIMEOUT_SEC** - максимальное время ожидания ответа.
+5. **PLAYLOAD_LIMIT** - предел загружаемого файла (**ГБ**);
+6. **REQUEST_TIMEOUT_SEC** - максимальное время ожидания ответа.
 
 ## Jenkins Job для автоматизации развёртывания проекта на нагрузочном стенде
 
@@ -181,7 +179,7 @@ environment {
                 "imageName": "redis_client",
                 "gen": "",
                 "commands": [
-                    "sudo REDIS_HOST=localhost REDIS_PORT=6379 REDIS_POOL_CONNECTION=100 WORKERS=16 MULTIPART_TOTAL_LIMIT=2 MULTIPART_MEMORY_LIMIT=100 REQUEST_TIMEOUT_SEC=60 ./redis-client > /dev/null 2>&1 &"
+                    "sudo REDIS_HOST=localhost REDIS_PORT=6379 REDIS_POOL_CONNECTION=100 WORKERS=16 PLAYLOAD_LIMIT=2 REQUEST_TIMEOUT_SEC=60 ./redis-client > /dev/null 2>&1 &"
                 ]
             }
         ]
@@ -218,7 +216,7 @@ environment {
                     "sudo docker rmi redis-client-rust 2>/dev/null || true;",
                     "sudo docker load -i redis-client-rust.tar;",
                     "sudo rm -f redis-client-rust.tar;",
-                    "sudo docker run --name redis-client-rust --privileged -d -p 8000:8080 -e REDIS_HOST=localhost -e REDIS_PORT=6379 -e REDIS_POOL_CONNECTION=100 -e WORKERS=16 -e MULTIPART_TOTAL_LIMIT=2 -e MULTIPART_MEMORY_LIMIT=100 -e REQUEST_TIMEOUT_SEC=60 redis-client-rust &"
+                    "sudo docker run --name redis-client-rust --privileged -d -p 8000:8080 -e REDIS_HOST=localhost -e REDIS_PORT=6379 -e REDIS_POOL_CONNECTION=100 -e WORKERS=16 -e PLAYLOAD_LIMIT=2 -e REQUEST_TIMEOUT_SEC=60 redis-client-rust &"
                 ]
             }
         ]

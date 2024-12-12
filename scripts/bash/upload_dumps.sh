@@ -42,8 +42,9 @@ else
 fi
 
 for key in "${KEYS[@]}"; do
-    curl -X POST "http://$REDIS_CLIENT_URL/uploadDumpKey" \
-         --form "dump=@$script_dir$RESULTS_PATH/dumps/$key.dump" \
+    curl -X POST "http://$REDIS_CLIENT_URL/uploadDumpKey?key_name=$key" \
+         --header "Content-Type: application/octet-stream" \
+         --data-binary "@$script_dir$RESULTS_PATH/dumps/$key.dump" \
          -m "500" \
          -s \
          -k >> $script_dir$RESULTS_PATH$LOG_FILE_NAME

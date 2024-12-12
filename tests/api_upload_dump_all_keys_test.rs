@@ -2,14 +2,16 @@ mod common;
 
 #[cfg(test)]
 mod tests {
+    use std::{fs::File, io::Read};
+
     use crate::common::{
         common::{load_test_params, TestSetup},
         data_structures::upload_dump::UploadDump,
     };
-    use actix_multipart_test::MultiPartFormDataBuilder;
     use actix_web::{
+        http::header,
         test::{self},
-        web::{self},
+        web::{self, Bytes},
         App,
     };
     use r2d2_redis::redis::Commands;
@@ -37,7 +39,7 @@ mod tests {
                 "Проверка загрузки дампа.",
                 UploadDump::default()
                     .file_path("./tests/resources/upload_dump_all_keys.rdb")
-                    .file_name("upload_dump_all_keys.rdb")
+                    .file_name("upload_dump_all_keys")
                     .build(),
                 Response::default()
                     .status("OK")
@@ -49,7 +51,7 @@ mod tests {
                 "Проверка загрузки дампа с некорректными данными.",
                 UploadDump::default()
                     .file_path("./tests/resources/error_data_dump_all_keys.rdb")
-                    .file_name("error_data_dump_all_keys.rdb")
+                    .file_name("error_data_dump_all_keys")
                     .build(),
                 Response::default()
                     .status("KO")
@@ -61,44 +63,26 @@ mod tests {
                 "Проверка загрузки пустого дампа.",
                 UploadDump::default()
                     .file_path("./tests/resources/empty_dump_all_keys.rdb")
-                    .file_name("empty_dump_all_keys.rdb")
+                    .file_name("empty_dump_all_keys")
                     .build(),
                 Response::default()
                     .status("KO")
                     .message("Uploaded file is empty.")
                     .data("")
                     .build(),
-            ),
-            (
-                "Проверка загрузки пустого дампа.",
-                UploadDump::default()
-                    .file_path("./tests/resources/incorrect_file_extension_all_keys.txt")
-                    .file_name("incorrect_file_extension_all_keys.txt")
-                    .build(),
-                Response::default()
-                    .status("KO")
-                    .message("Invalid file format. Expected '.rdb'.")
-                    .data("")
-                    .build(),
-            ),
+            )
         ];
 
         for (_, upload_dump, response) in test_cases {
-            let mut multipart_form_data_builder = MultiPartFormDataBuilder::new();
-            multipart_form_data_builder.with_file(
-                upload_dump.get_file_path(),
-                "dump",
-                "application/octet-stream",
-                upload_dump.get_file_name(),
-            );
-
-            multipart_form_data_builder.with_text("dump", upload_dump.get_file_name());
-            let (header, body) = multipart_form_data_builder.build();
+            let mut file = File::open(upload_dump.get_file_path()).unwrap();
+            let mut buffer: Vec<u8> = Vec::new();
+            file.read_to_end(&mut buffer).unwrap();
+            let payload: Bytes = Bytes::from(buffer);
 
             let req = test::TestRequest::post()
                 .uri("/uploadDumpAllKeys")
-                .insert_header(header)
-                .set_payload(body)
+                .insert_header(header::ContentType::octet_stream())
+                .set_payload(payload)
                 .to_request();
 
             let resp = test::call_service(&app, req).await;

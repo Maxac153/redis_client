@@ -1,3 +1,7 @@
+use crate::models::{
+    response::Response, status::StatusJson, status_key::StatusKey, type_key::TypeKey,
+};
+
 use actix_web::{get, web, HttpResponse, Responder};
 use r2d2::{Pool, PooledConnection};
 use r2d2_redis::{
@@ -5,10 +9,6 @@ use r2d2_redis::{
     RedisConnectionManager,
 };
 use serde::Deserialize;
-
-use crate::models::{
-    response::Response, status::StatusJson, status_key::StatusKey, type_key::TypeKey,
-};
 
 fn total_memory_usage(con: &mut redis::Connection) -> redis::RedisResult<String> {
     let memory_usage_info: String = redis::cmd("INFO").arg("MEMORY").query(con)?;

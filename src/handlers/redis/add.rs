@@ -1,9 +1,9 @@
+use crate::models::response::Response;
+
 use actix_web::{post, web, HttpResponse, Responder};
 use r2d2::{Pool, PooledConnection};
 use r2d2_redis::{redis::Commands, RedisConnectionManager};
 use serde::Deserialize;
-
-use crate::models::response::Response;
 
 #[derive(Deserialize)]
 pub struct AddListRequest {

@@ -2,15 +2,14 @@ mod common;
 
 #[cfg(test)]
 mod tests {
+    use crate::common::common::{load_test_params, TestSetup};
+    
     use actix_web::{
         http::StatusCode,
         test::{self, TestRequest},
         web, App,
     };
-
     use redis_client::handlers::redis::download_dump_key::download_dump_key;
-
-    use crate::common::common::{load_test_params, TestSetup};
 
     #[actix_rt::test]
     async fn api_download_dump_key_test() {

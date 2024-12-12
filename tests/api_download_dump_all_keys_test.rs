@@ -2,13 +2,13 @@ mod common;
 
 #[cfg(test)]
 mod tests {
+    use crate::common::common::{load_test_params, TestSetup};
+    
     use actix_web::{
         http::StatusCode,
         test::{self, TestRequest},
         web, App,
     };
-
-    use crate::common::common::{load_test_params, TestSetup};
     use redis_client::handlers::redis::download_dump_key::download_dump_all_keys;
 
     #[actix_rt::test]

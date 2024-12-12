@@ -1,5 +1,3 @@
-use actix_web::web;
-
 use crate::handlers::redis::add::{add_hash, add_list};
 use crate::handlers::redis::change_ttl::change_ttl;
 use crate::handlers::redis::download_dump_key::{download_dump_all_keys, download_dump_key};
@@ -8,6 +6,8 @@ use crate::handlers::redis::rename_key::rename_key;
 use crate::handlers::redis::reset::{reset_all_keys, reset_key};
 use crate::handlers::redis::status::{status_json, status_key};
 use crate::handlers::redis::upload_dump_key::{upload_dump_all_keys, upload_dump_key};
+
+use actix_web::web;
 
 pub fn init_routes_redis(cfg: &mut web::ServiceConfig) {
     cfg.service(status_json)

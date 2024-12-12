@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use crate::models::response::Response;
 
 use actix_web::{get, web, HttpResponse, Responder};
 use r2d2::{Pool, PooledConnection};
@@ -8,8 +8,7 @@ use r2d2_redis::{
 };
 use serde::Deserialize;
 use serde_json::{json, to_string_pretty};
-
-use crate::models::response::Response;
+use std::collections::HashMap;
 
 #[derive(Deserialize)]
 pub struct ReadListRequest {

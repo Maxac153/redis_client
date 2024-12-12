@@ -2,18 +2,17 @@ mod common;
 
 #[cfg(test)]
 mod tests {
+    use crate::common::{
+        common::{load_test_params, TestSetup},
+        data_structures::add::AddKey,
+    };
+    
     use actix_web::{
         http::header,
         test::{self, TestRequest},
         web, App,
     };
-
     use r2d2_redis::redis::Commands;
-
-    use crate::common::{
-        common::{load_test_params, TestSetup},
-        data_structures::add::AddKey,
-    };
     use redis_client::{handlers::redis::add::add_hash, models::response::Response};
 
     #[actix_rt::test]

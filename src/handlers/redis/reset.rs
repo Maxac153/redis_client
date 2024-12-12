@@ -1,8 +1,8 @@
+use crate::models::response::Response;
+
 use actix_web::{delete, web, HttpResponse, Responder};
 use r2d2::{Pool, PooledConnection};
 use r2d2_redis::{redis::Commands, RedisConnectionManager};
-
-use crate::models::response::Response;
 use serde::Deserialize;
 
 #[derive(Deserialize)]

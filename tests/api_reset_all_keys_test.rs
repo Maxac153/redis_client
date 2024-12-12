@@ -2,15 +2,14 @@ mod common;
 
 #[cfg(test)]
 mod tests {
+    use crate::common::common::{load_test_params, TestSetup};
+    
     use actix_web::{
         test::{self, TestRequest},
         web, App,
     };
-
     use r2d2_redis::redis::Commands;
     use redis_client::{handlers::redis::reset::reset_all_keys, models::response::Response};
-
-    use crate::common::common::{load_test_params, TestSetup};
 
     #[actix_rt::test]
     async fn api_reset_all_keys_test() {

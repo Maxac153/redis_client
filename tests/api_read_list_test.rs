@@ -2,17 +2,16 @@ mod common;
 
 #[cfg(test)]
 mod tests {
-    use actix_web::{
-        test::{self, TestRequest},
-        web, App,
-    };
-
-    use redis_client::{handlers::redis::read::read_list, models::response::Response};
-
     use crate::common::{
         common::{load_test_params, TestSetup},
         data_structures::read::ReadKey,
     };
+    
+    use actix_web::{
+        test::{self, TestRequest},
+        web, App,
+    };
+    use redis_client::{handlers::redis::read::read_list, models::response::Response};
 
     #[actix_rt::test]
     async fn api_read_list_test() {

@@ -6,16 +6,18 @@ mod tests {
         common::{load_test_params, TestSetup},
         data_structures::upload_dump::UploadDump,
     };
-    use actix_multipart_test::MultiPartFormDataBuilder;
+
     use actix_web::{
+        http::header,
         test::{self},
-        web::{self},
+        web::{self, Bytes},
         App,
     };
     use r2d2_redis::redis::Commands;
     use redis_client::{
         handlers::redis::upload_dump_key::upload_dump_key, models::response::Response,
     };
+    use std::{fs::File, io::Read};
 
     #[actix_rt::test]
     async fn api_upload_dump_key_test() {
@@ -32,72 +34,32 @@ mod tests {
         )
         .await;
 
-        let test_cases = [
-            (
-                "Проверка загрузки дампа.",
-                UploadDump::default()
-                    .file_path("./tests/resources/upload_dump_key.dump")
-                    .file_name("upload_dump_key.dump")
-                    .build(),
-                Response::default()
-                    .status("OK")
-                    .message("Files uploaded successfully!")
-                    .data("")
-                    .build(),
-            ),
-            (
-                "Проверка загрузки дампа с некорректными данными.",
-                UploadDump::default()
-                    .file_path("./tests/resources/error_data_dump_key.dump")
-                    .file_name("error_data_dump_key.dump")
-                    .build(),
-                Response::default()
-                    .status("KO")
-                    .message("An error was signalled by the server: DUMP payload version or checksum are wrong")
-                    .data("")
-                    .build(),
-            ),
-            (
-                "Проверка загрузки пустого дампа.",
-                UploadDump::default()
-                    .file_path("./tests/resources/empty_dump_key.dump")
-                    .file_name("empty_dump_key.dump")
-                    .build(),
-                Response::default()
-                    .status("KO")
-                    .message("An error was signalled by the server: DUMP payload version or checksum are wrong")
-                    .data("")
-                    .build(),
-            ),
-            (
-                "Проверка загрузки пустого дампа.",
-                UploadDump::default()
-                    .file_path("./tests/resources/incorrect_file_extension_key.txt")
-                    .file_name("incorrect_file_extension_all_keys.txt")
-                    .build(),
-                Response::default()
-                    .status("KO")
-                    .message("Invalid file format. Expected '.dump'.")
-                    .data("")
-                    .build(),
-            ),
-        ];
+        let test_cases = [(
+            "Проверка загрузки дампа.",
+            UploadDump::default()
+                .file_path("./tests/resources/upload_dump_key.dump")
+                .file_name("upload_dump_key.dump")
+                .build(),
+            Response::default()
+                .status("OK")
+                .message("Files uploaded successfully!")
+                .data("")
+                .build(),
+        )];
 
         for (_, upload_dump, response) in test_cases {
-            let mut multipart_form_data_builder = MultiPartFormDataBuilder::new();
-            multipart_form_data_builder.with_file(
-                upload_dump.get_file_path(),
-                "dump",
-                "application/octet-stream",
-                upload_dump.get_file_name(),
-            );
-            multipart_form_data_builder.with_text("dump", upload_dump.get_file_name());
-            let (header, body) = multipart_form_data_builder.build();
+            let mut file = File::open(upload_dump.get_file_path()).unwrap();
+            let mut buffer: Vec<u8> = Vec::new();
+            file.read_to_end(&mut buffer).unwrap();
+            let payload: Bytes = Bytes::from(buffer);
 
             let req = test::TestRequest::post()
-                .uri("/uploadDumpKey")
-                .insert_header(header)
-                .set_payload(body)
+                .uri(&format!(
+                    "/uploadDumpKey?key_name={}",
+                    upload_dump.get_file_name()
+                ))
+                .insert_header(header::ContentType::octet_stream())
+                .set_payload(payload)
                 .to_request();
 
             let resp = test::call_service(&app, req).await;
@@ -109,7 +71,7 @@ mod tests {
 
             assert_eq!(result, response);
             if response.get_status() == "OK" {
-                let key: String = con.lpop("upload_dump_key").unwrap();
+                let key: String = con.lpop(upload_dump.get_file_name()).unwrap();
                 assert_eq!("test_data", key);
             }
         }

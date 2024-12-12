@@ -6,8 +6,7 @@ pub struct Config {
     redis_port: String,
     redis_pool_connection: u32,
     workers: usize,
-    multipart_total_limit: usize,
-    multipart_mermory_limit: usize,
+    playload_limit: usize,
     request_timeout_sec: u64,
 }
 
@@ -24,12 +23,9 @@ impl Config {
                 .parse::<u32>()
                 .unwrap_or(10),
             workers: get_env_var("WORKERS", "4").parse::<usize>().unwrap_or(4),
-            multipart_total_limit: get_env_var("MULTIPART_TOTAL_LIMIT", "1")
+            playload_limit: get_env_var("PLAYLOAD_LIMIT", "1")
                 .parse::<usize>()
                 .unwrap_or(1),
-            multipart_mermory_limit: get_env_var("MULTIPART_MEMORY_LIMIT", "100")
-                .parse::<usize>()
-                .unwrap_or(100),
             request_timeout_sec: get_env_var("REQUEST_TIMEOUT_SEC", "60")
                 .parse::<u64>()
                 .unwrap_or(60),
@@ -52,12 +48,8 @@ impl Config {
         self.workers
     }
 
-    pub fn get_multipart_total_limit(&self) -> usize {
-        self.multipart_total_limit
-    }
-
-    pub fn get_multipart_mermory_limit(&self) -> usize {
-        self.multipart_mermory_limit
+    pub fn get_playload_limit(&self) -> usize {
+        self.playload_limit
     }
 
     pub fn get_request_timeout_sec(&self) -> u64 {

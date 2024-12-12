@@ -2,18 +2,17 @@ mod common;
 
 #[cfg(test)]
 mod tests {
-    use actix_web::{
-        test::{self, TestRequest},
-        web, App,
-    };
-
-    use r2d2_redis::redis::Commands;
-    use redis_client::{handlers::redis::rename_key::rename_key, models::response::Response};
-
     use crate::common::{
         common::{load_test_params, TestSetup},
         data_structures::rename::RenameKey,
     };
+    
+    use actix_web::{
+        test::{self, TestRequest},
+        web, App,
+    };
+    use r2d2_redis::redis::Commands;
+    use redis_client::{handlers::redis::rename_key::rename_key, models::response::Response};
 
     #[actix_rt::test]
     async fn api_rename_key_test() {

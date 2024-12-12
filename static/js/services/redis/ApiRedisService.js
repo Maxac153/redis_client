@@ -190,14 +190,14 @@ export class ApiRedisService {
     }
 
     async httpQueryUploadDumpKeyRedis(file) {
-        let formData = new FormData();
-        const cleanedFileName = file.name.replace(/_\d{2}_\d{2}_\d{4}(\s\(\d+\))?/g, '');
-        formData.append('dump', file, cleanedFileName);
-
+        const cleanedFileName = file.name.replace(/(_\d{2}_\d{2}_\d{4}(\s\(\d+\))?)?\.\w+$/, '');
         try {
-            const response = await fetch(`${this.baseURL}uploadDumpKey`, {
+            const response = await fetch(`${this.baseURL}uploadDumpKey?key_name=${cleanedFileName}`, {
                 method: 'POST',
-                body: formData
+                headers: {
+                    'Content-Type': 'application/octet-stream'
+                },
+                body: file
             });
 
             return await response.json();
@@ -208,14 +208,13 @@ export class ApiRedisService {
     }
 
     async httpQueryUploadDumpAllKeysRedis(file) {
-        let formData = new FormData();
-        const cleanedFileName = file.name.replace(/_\d{2}_\d{2}_\d{4}(\s\(\d+\))?/g, '');
-        formData.append('dump', file, cleanedFileName);
-
         try {
             const response = await fetch(`${this.baseURL}uploadDumpAllKeys`, {
                 method: 'POST',
-                body: formData
+                headers: {
+                    'Content-Type': 'application/octet-stream'
+                },
+                body: file
             });
 
             return await response.json();

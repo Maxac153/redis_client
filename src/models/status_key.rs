@@ -1,7 +1,7 @@
+use super::type_key::TypeKey;
+
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
-
-use super::type_key::TypeKey;
 
 #[derive(Debug, Default, Serialize, Deserialize, ToSchema)]
 pub struct StatusKey {
@@ -36,7 +36,13 @@ impl StatusKey {
         self.ttl
     }
 
-    pub fn new(key: String, type_key: Option<TypeKey>, len: i32, memory_usage: u32, ttl: i32) -> Self {
+    pub fn new(
+        key: String,
+        type_key: Option<TypeKey>,
+        len: i32,
+        memory_usage: u32,
+        ttl: i32,
+    ) -> Self {
         StatusKey {
             key,
             type_key,

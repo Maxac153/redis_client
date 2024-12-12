@@ -2,19 +2,18 @@ mod common;
 
 #[cfg(test)]
 mod tests {
+    use crate::common::{
+        common::{load_test_params, TestSetup},
+        data_structures::status_json::StatusJson,
+    };
+    
     use actix_web::{
         test::{self, TestRequest},
         web, App,
     };
-
     use redis_client::{
         handlers::redis::status::status_json,
         models::{response::Response, status::StatusJson as SJM},
-    };
-
-    use crate::common::{
-        common::{load_test_params, TestSetup},
-        data_structures::status_json::StatusJson,
     };
 
     #[actix_rt::test]

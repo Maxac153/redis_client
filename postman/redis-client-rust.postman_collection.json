@@ -349,23 +349,24 @@
 				"method": "POST",
 				"header": [],
 				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "dump",
-							"description": "Файл с раширением .dump",
-							"type": "file",
-							"src": []
-						}
-					]
+					"mode": "file",
+					"file": {
+						"src": "/home/main/Загрузки/testList_12_12_2024.dump"
+					}
 				},
 				"url": {
-					"raw": "{{app_protocol}}{{app_host}}{{app_port_rust}}/uploadDumpKey",
+					"raw": "{{app_protocol}}{{app_host}}{{app_port_rust}}/uploadDumpKey?key_name=testList",
 					"host": [
 						"{{app_protocol}}{{app_host}}{{app_port_rust}}"
 					],
 					"path": [
 						"uploadDumpKey"
+					],
+					"query": [
+						{
+							"key": "key_name",
+							"value": "testList"
+						}
 					]
 				}
 			},
@@ -377,15 +378,10 @@
 				"method": "POST",
 				"header": [],
 				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "dump",
-							"description": "Файл с раширением .dump",
-							"type": "file",
-							"src": []
-						}
-					]
+					"mode": "file",
+					"file": {
+						"src": "/home/main/Загрузки/dump_all_keys.rdb"
+					}
 				},
 				"url": {
 					"raw": "{{app_protocol}}{{app_host}}{{app_port_rust}}/uploadDumpAllKeys",

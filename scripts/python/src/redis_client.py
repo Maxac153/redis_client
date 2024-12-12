@@ -36,27 +36,17 @@ class RedisClient:
         keys = []
         with open('./scripts/python/resources/upload_keys.txt', 'r', encoding='utf-8') as f:
             keys = [line.strip() for line in f]
-            
-        boundary = '----WebKitFormBoundary7MA4YWxkTrZu0gW'
 
         for key in keys:
             with open(f'./scripts/python/dumps/{key}.dump', 'rb') as file:
                 headers = {
-                    'Content-Type': f'multipart/form-data; boundary={boundary}',
-                    'User-Agent': 'Python http.client'
+                    'Content-Type': 'application/octet-stream',
                 }
 
-                body = (
-                    f'--{boundary}\r\n'
-                    f'Content-Disposition: form-data; name="dump"; filename="{key}.dump"\r\n'
-                    f'Content-Type: application/octet-stream\r\n\r\n'
-                )
-
-                body = body.encode('utf-8') + file.read() + f'\r\n--{boundary}--\r\n'.encode('utf-8')
                 self.conn.request(
                     'POST',
-                    f'/uploadDumpKey',
-                    body,
+                    f'/uploadDumpKey?key_name={key}',
+                    file.read(),
                     headers
                 )
                 print('Upload response: ' + str(self.conn.getresponse().read()))

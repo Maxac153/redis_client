@@ -1,7 +1,7 @@
+use super::status_key::StatusKey;
+
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
-
-use super::status_key::StatusKey;
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct StatusJson {

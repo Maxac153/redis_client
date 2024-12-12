@@ -2,18 +2,17 @@ mod common;
 
 #[cfg(test)]
 mod tests {
-    use actix_web::{
-        test::{self, TestRequest},
-        web, App,
-    };
-
-    use redis_client::models::status_key::StatusKey as SKM;
-    use redis_client::{handlers::redis::status::status_key, models::response::Response};
-
     use crate::common::{
         common::{load_test_params, TestSetup},
         data_structures::status_key::StatusKey,
     };
+    
+    use actix_web::{
+        test::{self, TestRequest},
+        web, App,
+    };
+    use redis_client::models::status_key::StatusKey as SKM;
+    use redis_client::{handlers::redis::status::status_key, models::response::Response};
 
     #[actix_rt::test]
     async fn api_status_key_test() {

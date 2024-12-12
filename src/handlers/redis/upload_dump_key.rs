@@ -1,46 +1,40 @@
-use std::{collections::HashMap, fs::File, io::Read};
+use crate::models::response::Response;
 
 use actix_web::{post, Responder};
-
-use actix_multipart::form::{tempfile::TempFile, MultipartForm};
 use actix_web::{web, HttpResponse};
 use r2d2::{Pool, PooledConnection};
 use r2d2_redis::{
     redis::{self, Commands, RedisResult},
     RedisConnectionManager,
 };
-
-use crate::models::response::Response;
+use serde::Deserialize;
+use std::collections::HashMap;
 
 fn restore(con: &mut redis::Connection, key: String, data: Vec<u8>) -> RedisResult<String> {
     let status: String = redis::cmd("RESTORE").arg(key).arg(0).arg(data).query(con)?;
     Ok(status)
 }
 
-fn validate_file_name(file_name: &str, file_extension: &str) -> Result<String, String> {
-    if file_name.ends_with(file_extension) {
-        match file_name.split_once('.') {
-            Some((name, _extension)) => Ok(name.to_string()),
-            None => Err("Error: No extension found.".to_string()),
-        }
-    } else {
-        Err(format!(
-            "Invalid file format. Expected '{}'.",
-            file_extension
-        ))
-    }
+#[derive(Deserialize)]
+pub struct UploadDumpRequest {
+    key_name: String,
 }
 
 #[utoipa::path(
     tag = "Redis Client",
     description = "Redis Upload Dump Key - Загрузка дампа в Redis",
     post,
-    path = "/uploadDumpKey"
+    path = "/uploadDumpKey",
+    params(
+        ("key_name" = String, Query, description = "Name of the key", example = "listKey")
+    ),
+    request_body = Vec<u8>,
 )]
 #[post("/uploadDumpKey")]
 pub async fn upload_dump_key(
     pool: web::Data<Pool<RedisConnectionManager>>,
-    MultipartForm(form): MultipartForm<UploadForm>,
+    query: web::Query<UploadDumpRequest>,
+    bytes: web::Bytes,
 ) -> impl Responder {
     let mut con: PooledConnection<RedisConnectionManager> = match pool.get() {
         Ok(connection) => connection,
@@ -51,29 +45,17 @@ pub async fn upload_dump_key(
         }
     };
 
-    let file_name: String = match validate_file_name(&form.dump.file_name.unwrap(), ".dump") {
-        Ok(name) => name,
-        Err(err) => return HttpResponse::Ok().json(Response::error(err)),
-    };
-
-    let file_path: &std::path::Path = form.dump.file.path();
-
-    let mut file: File = match std::fs::File::open(&file_path) {
-        Ok(file) => file,
-        Err(err) => return HttpResponse::Ok().json(Response::error(err.to_string())),
-    };
-
-    let mut contents: Vec<u8> = Vec::new();
-    if let Err(err) = file.read_to_end(&mut contents) {
-        return HttpResponse::Ok().json(Response::error(err.to_string()));
+    if bytes.is_empty() {
+        return HttpResponse::BadRequest()
+            .json(Response::error("Uploaded file is empty.".to_string()));
     }
 
-    match con.del::<&String, ()>(&file_name) {
+    match con.del::<&String, ()>(&query.key_name) {
         Ok(_) => {}
         Err(err) => return HttpResponse::Ok().json(Response::error(err.to_string())),
     };
 
-    let res = match restore(&mut con, file_name.clone(), contents) {
+    let res = match restore(&mut con, query.key_name.clone(), bytes.to_vec()) {
         Ok(_) => Response::ok("Files uploaded successfully!".to_string(), "".to_string()),
         Err(err) => Response::error(err.to_string()),
     };
@@ -126,25 +108,17 @@ fn vec_to_hashmap(data: Vec<u8>) -> Result<HashMap<String, Vec<u8>>, String> {
     Ok(result)
 }
 
-#[derive(Debug, MultipartForm)]
-struct UploadForm {
-    dump: TempFile,
-}
-
 #[utoipa::path(
     tag = "Redis Client",
     description = "Redis Upload Dump All Keys - Загрузка дампа со всеми ключами в Redis",
     post,
     path = "/uploadDumpAllKeys",
-    request_body(
-        content_type = "multipart/form-data",
-        description = "Файл для загрузки",
-    )
+    request_body = Vec<u8>,
 )]
 #[post("/uploadDumpAllKeys")]
 pub async fn upload_dump_all_keys(
     pool: web::Data<Pool<RedisConnectionManager>>,
-    MultipartForm(form): MultipartForm<UploadForm>,
+    bytes: web::Bytes,
 ) -> impl Responder {
     let mut con: PooledConnection<RedisConnectionManager> = match pool.get() {
         Ok(connection) => connection,
@@ -155,28 +129,12 @@ pub async fn upload_dump_all_keys(
         }
     };
 
-    match validate_file_name(&form.dump.file_name.unwrap(), ".rdb") {
-        Ok(name) => name,
-        Err(err) => return HttpResponse::Ok().json(Response::error(err)),
-    };
-
-    let file_path: &std::path::Path = form.dump.file.path();
-    let mut file: File = match File::open(&file_path) {
-        Ok(file) => file,
-        Err(err) => return HttpResponse::Ok().json(Response::error(err.to_string())),
-    };
-
-    let mut contents: Vec<u8> = Vec::new();
-    if let Err(err) = file.read_to_end(&mut contents) {
-        return HttpResponse::Ok().json(Response::error(err.to_string()));
-    }
-
-    if contents.is_empty() {
+    if bytes.is_empty() {
         return HttpResponse::BadRequest()
             .json(Response::error("Uploaded file is empty.".to_string()));
     }
 
-    let dump: HashMap<String, Vec<u8>> = match vec_to_hashmap(contents) {
+    let dump: HashMap<String, Vec<u8>> = match vec_to_hashmap(bytes.to_vec()) {
         Ok(contents) => contents,
         Err(_) => {
             return HttpResponse::InternalServerError().json(Response::error(
@@ -187,16 +145,15 @@ pub async fn upload_dump_all_keys(
     };
 
     for (key, data) in dump {
-        match con.del::<String, ()>(key.to_string()) {
-            Ok(_) => {}
-            Err(err) => return HttpResponse::Ok().json(Response::error(err.to_string())),
-        };
+        if let Err(err) = con.del::<String, ()>(key.clone()) {
+            return HttpResponse::Ok().json(Response::error(err.to_string()));
+        }
 
-        match restore(&mut con, key.to_string(), data.to_vec()) {
-            Ok(_) => continue,
-            Err(err) => return HttpResponse::Ok().json(Response::error(err.to_string())),
-        };
+        if let Err(err) = restore(&mut con, key.clone(), data) {
+            return HttpResponse::Ok().json(Response::error(err.to_string()));
+        }
     }
+
     HttpResponse::Ok().json(Response::ok(
         "Files uploaded successfully!".to_string(),
         "".to_string(),

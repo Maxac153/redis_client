@@ -9,13 +9,12 @@ r2d2_redis = "0.14.0"
 
 actix-web = "4.9.0"
 actix-files = "0.6.6"
-actix-multipart = "0.7.2"
 actix-web-prom = "0.9.0"
 tera = "1.15"
 
 serde_json = "1.0.133"
-serde = { version = "1.0.215", features = ["derive"] }
-tokio = { version = "1.41.1", features = ["full"] }
+serde = { version = "1.0.216", features = ["derive"] }
+tokio = { version = "1.42.0", features = ["full"] }
 
 utoipa = { version = "5.2.0" }
 utoipa-actix-web = { version = "0.1.2" }
@@ -25,7 +24,6 @@ prometheus = "0.13.4"
 
 [dev-dependencies]
 actix-rt = "2.10.0"
-actix-multipart-test = "0.0.3"
 
 [profile.release]
 opt-level = 3

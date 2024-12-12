@@ -1,29 +1,25 @@
-use std::time::Duration;
-
 use actix_files::Files;
-use actix_multipart::form::MultipartFormConfig;
 use actix_web::{web, App, HttpServer};
-use actix_web_prom::{PrometheusMetrics, PrometheusMetricsBuilder};
+use actix_web_prom::PrometheusMetrics;
+use actix_web_prom::PrometheusMetricsBuilder;
 use prometheus::opts;
 use prometheus::IntCounterVec;
+use r2d2::Pool;
+use r2d2_redis::RedisConnectionManager;
+use redis_client::handlers::redis::{
+    add, change_ttl, download_dump_key, read, rename_key, reset, status, upload_dump_key,
+};
 use redis_client::{
     models::{response::Response, status::StatusJson, status_key::StatusKey},
     routes::{init_routes_pages::init_routes_pages, init_routes_redis::init_routes_redis},
 };
+use std::time::Duration;
 use tera::Tera;
-
-use r2d2::Pool;
-use r2d2_redis::RedisConnectionManager;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
-use redis_client::handlers::redis::{
-    add, change_ttl, download_dump_key, read, rename_key, reset, status, upload_dump_key,
-};
-
 mod config;
 
-const MB: usize = 1048576;
 const GB: usize = 1073741824;
 
 // Swagger
@@ -71,27 +67,21 @@ async fn main() -> std::io::Result<()> {
         .build(manager)
         .unwrap();
 
-    // Prometheus
-    let prometheus: PrometheusMetrics = PrometheusMetricsBuilder::new("api")
-        .endpoint("/metrics")
-        .build()
-        .unwrap();
-
-    let counter_opts = opts!("counter", "some random counter").namespace("api");
-    let counter = IntCounterVec::new(counter_opts, &["endpoint", "method", "status"]).unwrap();
-
-    let multipart_total_limit = config.get_multipart_total_limit();
-    let multipart_mermory_limit = config.get_multipart_mermory_limit();
-
+    let playload_limit = config.get_playload_limit();
     HttpServer::new(move || {
+        // Prometheus
+        let prometheus: PrometheusMetrics = PrometheusMetricsBuilder::new("api")
+            .endpoint("/metrics")
+            .build()
+            .unwrap();
+
+        let counter_opts = opts!("counter", "some random counter").namespace("api");
+        let counter = IntCounterVec::new(counter_opts, &["endpoint", "method", "status"]).unwrap();
+
         App::new()
-            .wrap(prometheus.clone())
-            .app_data(web::Data::new(counter.clone()))
-            .app_data(web::Data::new(
-                MultipartFormConfig::default()
-                    .total_limit(multipart_total_limit * GB)
-                    .memory_limit(multipart_mermory_limit * MB),
-            ))
+            .wrap(prometheus)
+            .app_data(web::PayloadConfig::new(playload_limit * GB))
+            .app_data(web::Data::new(counter))
             .app_data(web::Data::new(redis_url.to_string()))
             .app_data(web::Data::new(redis_pool_connection.clone()))
             .app_data(web::Data::new(Tera::new("./templates/*").unwrap()))

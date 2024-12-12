@@ -27,7 +27,7 @@ RUN cargo test --target x86_64-unknown-linux-musl -- --test-threads=1
 RUN cargo build --target x86_64-unknown-linux-musl --release
 
 # Этап выполнения
-FROM alpine:latest
+FROM scratch
 
 WORKDIR /home
 
